@@ -3,29 +3,35 @@
 This repository is for backend part of Dorm Social Rooms Manager.
 Made using Java and Spring Boot
 
-__Requirements__
+### Requirements
 
 To run this repository you need:
  - Git
  - IDE that handles Maven, for example IntelliJ
  - MariaDB server
 
-__Downloading__
+### Downloading
 
 ```bash
 git clone https://github.com/dorm-social-room-manager/dsrm-backend.git
 cd dsrm-backend
 ```
 
-__Running locally__
-```bash
-./mvnw spring-boot:run
-```
-MariaDB server must be TURNED ON before running the line above.
-It may require to set `JAVA_HOME` system variable to your JDK location
+### Running locally
 
-**Alternative:**
-Other way is to run main() in DsrmBackendApplication.java through your IDE
+If you want to run through Maven:
+```bash
+.\mvnw spring-boot:run -D spring-boot.run.profiles=dev
+```
+
+If you want to run this in IntelliJ add to your `Active profiles` "dev"
+
+**NOTE:**
+
+- MariaDB server must be __TURNED ON__ before running the line above.
+- Running through Maven may require to set `JAVA_HOME` system variable to your JDK location
+
+
 
 
 
