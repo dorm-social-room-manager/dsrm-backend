@@ -7,8 +7,8 @@ Made using Java and Spring Boot
 
 To run this repository you need:
  - Git
- - IDE that handles Maven, for example IntelliJ
  - MariaDB server
+ - Docker
 
 ### Downloading
 
@@ -17,19 +17,39 @@ git clone https://github.com/dorm-social-room-manager/dsrm-backend.git
 cd dsrm-backend
 ```
 
-### Running locally
-
-If you want to run through Maven:
-```bash
-.\mvnw spring-boot:run -D spring-boot.run.profiles=dev
+### Necessary configuration
+In application.properties we have to specify:
+```
+spring.datasource.url = # database url
+spring.datasource.username = # database username
+spring.datasource.password = # database password
+spring.datasource.driver-class-name = org.mariadb.jdbc.Driver
+spring.jpa.hibernate.ddl-auto = create-drop
+spring.security.user.name = # username
+spring.security.user.password = # user password
 ```
 
-If you want to run this in IntelliJ add to your `Active profiles` "dev"
+### Building application
+```bash
+./mvnw install
+```
 
-**NOTE:**
+### Running tests
 
-- MariaDB server must be __TURNED ON__ before running the line above.
-- Running through Maven may require to set `JAVA_HOME` system variable to your JDK location
+```bash
+./mvnw test
+```
+
+**NOTE:** Docker is required to run tests
+
+### Running application
+
+```bash
+./mvnw spring-boot:run
+```
+
+
+**NOTE:** Running through Maven may require to set `JAVA_HOME` system variable to your JDK location
 
 
 
