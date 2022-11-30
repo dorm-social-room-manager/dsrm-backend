@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    username: root
+    password: dsrm
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  security:
+    user:
+      name: admin
+      password: dsrm
