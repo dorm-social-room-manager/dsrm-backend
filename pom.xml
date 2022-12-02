@@ -19,6 +19,8 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <springdoc.version>1.6.13</springdoc.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
+        <lombok.version>1.18.24</lombok.version>
+
     </properties>
     <dependencies>
         <dependency>
@@ -108,17 +110,17 @@
                             <path>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
-                                <version>1.18.24</version>
+                                <version>${lombok.version}</version>
                             </path>
                             <path>
                                 <groupId>org.mapstruct</groupId>
                                 <artifactId>mapstruct-processor</artifactId>
-                                <version>1.5.3.Final</version>
+                                <version>${mapstruct.version}</version>
                             </path>
                             <path>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok-mapstruct-binding</artifactId>
-                                <version>0.2.0</version>
+                                <version>${lombok.version}</version>
                             </path>
                         </annotationProcessorPaths>
                         <exclude>
