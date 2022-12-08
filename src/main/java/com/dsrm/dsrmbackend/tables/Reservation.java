@@ -23,7 +23,7 @@ public class Reservation {
     private LocalDateTime startTime;
     @Column(name = "end_time")
     private LocalDateTime endTime;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    private Set<User> user;
+    private User user;
 }
