@@ -1,6 +1,5 @@
-package com.dsrm.dsrmbackend.tables;
+package com.dsrm.dsrmbackend.entities;
 
-import com.dsrm.dsrmbackend.tables.Role;
 import lombok.Getter;
 import lombok.Setter;
 

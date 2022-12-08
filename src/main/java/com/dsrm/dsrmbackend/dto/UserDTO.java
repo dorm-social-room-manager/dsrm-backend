@@ -1,7 +1,7 @@
 package com.dsrm.dsrmbackend.dto;
 
 
-import com.dsrm.dsrmbackend.tables.Role;
+import com.dsrm.dsrmbackend.entities.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
