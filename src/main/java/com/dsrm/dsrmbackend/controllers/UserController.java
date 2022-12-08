@@ -2,11 +2,13 @@ package com.dsrm.dsrmbackend.controllers;
 
 
 
+import com.dsrm.dsrmbackend.dto.UserDTO;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,9 @@ public class UserController {
     @PostMapping(value = "/users", consumes ="application/json")
     void addUser(@RequestBody UserRequestDTO userRequestDTO) {}
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/users/{id}", produces ="application/json", consumes ="application/json")
-    ResponseEntity<Object> oneUser(@PathVariable Long id) throws JSONException {
+    ResponseEntity<UserDTO> getUser(@PathVariable Long id) throws JSONException {
         JSONObject outputObj = new JSONObject();
         outputObj.put("email",null);
         outputObj.put("name",null);
@@ -30,11 +33,11 @@ public class UserController {
         outputObj.put("roles",null);
         outputObj.put("isBanned",null);
         outputObj.put("banEndDate",null);
-
-        return new ResponseEntity(outputObj,HttpStatus.OK);
-    }
-    @GetMapping(value = "/users")
-    public ResponseEntity readBooks (@RequestParam  Pageable pageable,@RequestParam Long pageNum) {
         return null;
+    }
+
+    @GetMapping(value = "/users")
+    public ResponseEntity<Page<UserDTO>> readUsers(Pageable pageable) {
+        return new ResponseEntity<>(Page.empty(),HttpStatus.OK);
     }
 }

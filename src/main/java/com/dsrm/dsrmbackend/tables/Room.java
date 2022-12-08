@@ -8,10 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
-@Entity
+@Entity(name = "rooms")
 @Getter
 @Setter
-@Table(name = "rooms")
 public class Room {
     @Id
     private Long Id;

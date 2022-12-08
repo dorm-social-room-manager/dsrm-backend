@@ -10,10 +10,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
-@Entity
+@Entity(name = "reservations")
 @Getter
 @Setter
-@Table(name = "reservations")
 public class Reservation {
     @Id
     private Long Id;

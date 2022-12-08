@@ -7,10 +7,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "users")
 @Getter
 @Setter
-@Table(name = "users")
 public class User {
     @Id
     private Long id;

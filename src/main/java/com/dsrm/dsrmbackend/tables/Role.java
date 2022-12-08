@@ -7,10 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name = "roles")
 @Getter
 @Setter
-@Table(name = "roles")
 public class Role {
     @Id
     private Long id;
