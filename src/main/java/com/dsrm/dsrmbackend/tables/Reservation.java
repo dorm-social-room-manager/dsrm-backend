@@ -17,9 +17,9 @@ import java.util.Set;
 public class Reservation {
     @Id
     private Long Id;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "room_id")
-    private Set<Room> room;
+    private Room room;
     @Column(name = "start_time")
     private LocalDateTime startTime;
     @Column(name = "end_time")

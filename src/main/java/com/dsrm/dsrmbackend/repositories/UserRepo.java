@@ -1,6 +1,5 @@
-package com.dsrm.dsrmbackend.tablesrepo;
+package com.dsrm.dsrmbackend.repositories;
 
-import com.dsrm.dsrmbackend.DTOobjects.UserDTO;
 import com.dsrm.dsrmbackend.tables.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

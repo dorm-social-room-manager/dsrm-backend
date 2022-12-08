@@ -3,7 +3,7 @@ package com.dsrm.dsrmbackend.services;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.pageable.PaginatedUserResponse;
 import com.dsrm.dsrmbackend.tables.User;
-import com.dsrm.dsrmbackend.tablesrepo.UserRepo;
+import com.dsrm.dsrmbackend.repositories.UserRepo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -1,10 +1,8 @@
 package com.dsrm.dsrmbackend.mappers;
 
-import com.dsrm.dsrmbackend.DTOobjects.UserDTO;
+import com.dsrm.dsrmbackend.dto.UserDTO;
 import com.dsrm.dsrmbackend.tables.User;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class UserMapper {

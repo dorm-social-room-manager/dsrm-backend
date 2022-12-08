@@ -1,7 +1,5 @@
-package com.dsrm.dsrmbackend.DTOobjects;
+package com.dsrm.dsrmbackend.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

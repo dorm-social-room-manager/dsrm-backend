@@ -18,15 +18,14 @@ public class Room {
     @Column(name = "room_number")
     private Integer roomNumber;
     private Integer floor;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "type_id")
-    private Set<RoomType> roomType;
+    private RoomType roomType;
     @Column(name = "max_capacity")
     private Integer maxCapacity;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "key_owner_id")
-    @Column(name = "key_owner_id")
-    private Set<User> keyOwner;
+    private User keyOwner;
     @Column(name = "opening_time")
     private LocalTime openingTime;
     @Column(name = "closing_time")

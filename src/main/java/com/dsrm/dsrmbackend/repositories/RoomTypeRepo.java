@@ -1,4 +1,4 @@
-package com.dsrm.dsrmbackend.tablesrepo;
+package com.dsrm.dsrmbackend.repositories;
 
 import com.dsrm.dsrmbackend.tables.RoomType;
 import org.springframework.data.jpa.repository.JpaRepository;
