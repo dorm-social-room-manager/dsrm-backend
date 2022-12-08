@@ -1,6 +1,6 @@
 package com.dsrm.dsrmbackend.services;
 
-import com.dsrm.dsrmbackend.mappers.UserMapper;
+
 import com.dsrm.dsrmbackend.pageable.PaginatedUserResponse;
 import com.dsrm.dsrmbackend.tables.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
@@ -13,16 +13,4 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Getter
-@Setter
-public class UserService {
-    private final UserRepo userRepo;
-    private final UserMapper userMapper;
-    public PaginatedUserResponse readUsers(Pageable pageable) {
-        Page<User> userPage = userRepo.findAll(pageable);
-        return PaginatedUserResponse.builder()
-                .numberOfItems(userPage.getTotalElements()).numberOfPages(userPage.getTotalPages())
-                .userList(userPage.getContent())
-                .build();
-    }
-}
+public class UserService { }

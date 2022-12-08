@@ -2,9 +2,8 @@ package com.dsrm.dsrmbackend.controllers;
 
 
 
-import com.dsrm.dsrmbackend.dto.UserDTO;
+import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.services.UserService;
-import com.dsrm.dsrmbackend.tables.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -20,9 +19,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/users", consumes ="application/json")
-    User addUser(@RequestBody UserDTO userDTO) {
-        return userService.getUserMapper().toUser(userDTO);
-    }
+    void addUser(@RequestBody UserRequestDTO userRequestDTO) {}
 
     @GetMapping(value = "/users/{id}", produces ="application/json", consumes ="application/json")
     ResponseEntity<Object> oneUser(@PathVariable Long id) throws JSONException {
@@ -38,6 +35,6 @@ public class UserController {
     }
     @GetMapping(value = "/users")
     public ResponseEntity readBooks (@RequestParam  Pageable pageable,@RequestParam Long pageNum) {
-        return ResponseEntity.ok(userService.readUsers(pageable));
+        return null;
     }
 }

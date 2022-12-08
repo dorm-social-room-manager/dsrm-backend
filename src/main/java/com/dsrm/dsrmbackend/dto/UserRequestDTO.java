@@ -9,7 +9,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class UserDTO {
+public class UserRequestDTO {
     private String email;
     private String password;
     private String name;
