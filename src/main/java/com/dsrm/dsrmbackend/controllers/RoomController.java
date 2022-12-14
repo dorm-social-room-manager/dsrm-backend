@@ -1,7 +1,5 @@
 package com.dsrm.dsrmbackend.controllers;
-<<<<<<< HEAD
 
-=======
 import com.dsrm.dsrmbackend.dto.RoomDTO;
 import com.dsrm.dsrmbackend.services.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -38,5 +34,4 @@ public class RoomController {
     public ResponseEntity<Page<RoomDTO>> readRooms(Pageable pageable) {
         return new ResponseEntity<>(Page.empty(),HttpStatus.OK);
     }
->>>>>>> 1dc546d (fix: Renamed RoomControler to RoomController)
 }
