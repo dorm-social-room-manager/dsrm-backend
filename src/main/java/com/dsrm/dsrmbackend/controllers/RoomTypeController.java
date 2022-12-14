@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
 

@@ -3,13 +3,11 @@ package com.dsrm.dsrmbackend.dto;
 import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.entities.User;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class RoomDTO {
