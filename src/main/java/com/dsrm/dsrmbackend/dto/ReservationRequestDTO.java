@@ -7,7 +7,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class ReservationRequestDTO {
