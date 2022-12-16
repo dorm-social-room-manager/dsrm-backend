@@ -36,5 +36,4 @@ public class RoomTypeController {
     public ResponseEntity<Page<RoomTypeDTO>> readRoomTypes(Pageable pageable) {
         return new ResponseEntity<>(Page.empty(),HttpStatus.OK);
     }
->>>>>>> 6e1032a (feat: Create rest room type endpoints to retrieve all room types and specific room type)
 }
