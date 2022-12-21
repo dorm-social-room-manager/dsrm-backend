@@ -12,6 +12,7 @@ import java.time.LocalTime;
 @Setter
 public class Room {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     @Column(name = "room_number")
     private Integer roomNumber;
