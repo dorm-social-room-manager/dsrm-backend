@@ -5,14 +5,12 @@ import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import com.dsrm.dsrmbackend.entities.Room;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface RoomMapper {
 
-    RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
     @Mapping(source = "number", target = "roomNumber")
-    Room RoomReqDtoToRoom(RoomRequestDTO roomDto);
-    RoomDTO RoomToRoomDTO(Room room);
+    Room roomReqDTOToRoom(RoomRequestDTO roomDto);
+    RoomDTO roomToRoomDTO(Room room);
 
 }
