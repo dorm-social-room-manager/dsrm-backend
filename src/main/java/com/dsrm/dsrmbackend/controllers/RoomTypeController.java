@@ -1,6 +1,8 @@
 package com.dsrm.dsrmbackend.controllers;
 
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
+import com.dsrm.dsrmbackend.entities.RoomType;
+import com.dsrm.dsrmbackend.mappers.RoomTypeMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +14,10 @@ import com.dsrm.dsrmbackend.services.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,17 +25,21 @@ public class RoomTypeController {
     private final RoomTypeService roomTypeService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/room-types", consumes= MediaType.APPLICATION_JSON_VALUE)
-    void addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {}
+    @PostMapping(value = "/room_types", consumes= MediaType.APPLICATION_JSON_VALUE)
+    RoomType addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
+        return roomTypeService.addRoomType(roomTypeRequestDTO);
+    }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/room_types/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/room_types/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RoomTypeDTO> getRoomType(@PathVariable Long id){
-        return null;
+        Optional<RoomType> room = roomTypeService.getRoomType(id);
+        return room.map(value -> new ResponseEntity<>(RoomTypeMapper.INSTANCE.RoomTypeToRoomTypeDTO(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(value = "/room_types")
     public ResponseEntity<Page<RoomTypeDTO>> readRoomTypes(Pageable pageable) {
-        return new ResponseEntity<>(Page.empty(),HttpStatus.OK);
+        return new ResponseEntity<>(roomTypeService.getRoomTypes(pageable).map(RoomTypeMapper.INSTANCE::RoomTypeToRoomTypeDTO),HttpStatus.OK);
     }
 }

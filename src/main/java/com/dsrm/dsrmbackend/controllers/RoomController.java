@@ -26,8 +26,8 @@ public class RoomController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
-    void addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
-        roomService.addRoom(roomRequestDTO);
+    Room addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
+        return roomService.addRoom(roomRequestDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)
