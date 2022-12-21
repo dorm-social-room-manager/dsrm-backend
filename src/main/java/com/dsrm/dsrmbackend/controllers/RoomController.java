@@ -41,5 +41,6 @@ public class RoomController {
     @GetMapping(value = "/rooms")
     public ResponseEntity<Page<RoomDTO>> readRooms(Pageable pageable) {
         return new ResponseEntity<>(roomService.getRooms(pageable).map(roomMapper::roomToRoomDTO),HttpStatus.OK);
+
     }
 }

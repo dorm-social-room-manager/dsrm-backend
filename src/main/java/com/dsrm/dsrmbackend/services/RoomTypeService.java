@@ -13,3 +13,4 @@ public interface RoomTypeService {
 
     Page<RoomType> getRoomTypes(Pageable pageable);
 }
+
