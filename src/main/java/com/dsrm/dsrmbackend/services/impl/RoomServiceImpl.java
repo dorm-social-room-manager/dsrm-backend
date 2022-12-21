@@ -16,8 +16,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
     private final RoomRepo repository;
+    private final RoomMapper roomMapper;
     public Room addRoom(RoomRequestDTO roomDto) {
-        Room room = RoomMapper.INSTANCE.RoomReqDtoToRoom(roomDto);
+        Room room = roomMapper.roomReqDTOToRoom(roomDto);
         repository.save(room);
         return room;
     }

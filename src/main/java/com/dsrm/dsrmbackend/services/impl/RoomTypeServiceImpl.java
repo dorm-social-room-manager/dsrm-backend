@@ -16,8 +16,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomTypeServiceImpl implements RoomTypeService {
     private final RoomTypeRepo repository;
+    private final RoomTypeMapper roomTypeMapper;
     public RoomType addRoomType(RoomTypeRequestDTO roomTypeReqDto) {
-        RoomType roomType = RoomTypeMapper.INSTANCE.RoomTypeReqDTOToRoomType(roomTypeReqDto);
+        RoomType roomType = roomTypeMapper.roomTypeReqDTOToRoomType(roomTypeReqDto);
         repository.save(roomType);
         return roomType;
     }
