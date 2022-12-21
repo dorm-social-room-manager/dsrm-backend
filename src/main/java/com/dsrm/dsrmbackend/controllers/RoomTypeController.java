@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.dsrm.dsrmbackend.dto.RoomTypeDTO;
-import com.dsrm.dsrmbackend.services.RoomTypeService;
+import com.dsrm.dsrmbackend.services.impl.RoomTypeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +22,10 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class RoomTypeController {
-    private final RoomTypeService roomTypeService;
+    private final RoomTypeServiceImpl roomTypeService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/room_types", consumes= MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/room-types", consumes= MediaType.APPLICATION_JSON_VALUE)
     RoomType addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
         return roomTypeService.addRoomType(roomTypeRequestDTO);
     }

@@ -3,7 +3,7 @@ package com.dsrm.dsrmbackend.controllers;
 import com.dsrm.dsrmbackend.dto.RoomDTO;
 import com.dsrm.dsrmbackend.entities.Room;
 import com.dsrm.dsrmbackend.mappers.RoomMapper;
-import com.dsrm.dsrmbackend.services.RoomService;
+import com.dsrm.dsrmbackend.services.impl.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class RoomController {
-    private final RoomService roomService;
+    private final RoomServiceImpl roomService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
