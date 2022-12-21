@@ -3,7 +3,7 @@ package com.dsrm.dsrmbackend.controllers;
 import com.dsrm.dsrmbackend.dto.RoomDTO;
 import com.dsrm.dsrmbackend.entities.Room;
 import com.dsrm.dsrmbackend.mappers.RoomMapper;
-import com.dsrm.dsrmbackend.services.impl.RoomServiceImpl;
+import com.dsrm.dsrmbackend.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,8 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class RoomController {
-    private final RoomServiceImpl roomService;
+    private final RoomService roomService;
+    private final RoomMapper roomMapper;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
@@ -34,12 +35,11 @@ public class RoomController {
     @GetMapping(value = "/rooms/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes =MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RoomDTO> getRoom(@PathVariable Long id){
         Optional<Room> room = roomService.getRoom(id);
-        return room.map(value -> new ResponseEntity<>(RoomMapper.INSTANCE.RoomToRoomDTO(value), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        return ResponseEntity.of(room.map(roomMapper::roomToRoomDTO));
     }
 
     @GetMapping(value = "/rooms")
     public ResponseEntity<Page<RoomDTO>> readRooms(Pageable pageable) {
-        return new ResponseEntity<>(roomService.getRooms(pageable).map(RoomMapper.INSTANCE::RoomToRoomDTO),HttpStatus.OK);
+        return new ResponseEntity<>(roomService.getRooms(pageable).map(roomMapper::roomToRoomDTO),HttpStatus.OK);
     }
 }
