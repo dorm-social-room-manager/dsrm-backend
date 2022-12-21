@@ -19,8 +19,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     private final RoomTypeMapper roomTypeMapper;
     public RoomType addRoomType(RoomTypeRequestDTO roomTypeReqDto) {
         RoomType roomType = roomTypeMapper.roomTypeReqDTOToRoomType(roomTypeReqDto);
-        repository.save(roomType);
-        return roomType;
+        return repository.save(roomType);
     }
 
     public Optional<RoomType> getRoomType(Long roomId) {
