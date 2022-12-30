@@ -1,14 +1,13 @@
 package com.dsrm.dsrmbackend.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalTime;
 
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class RoomRequestDTO {
     private String name;
     private int number;
