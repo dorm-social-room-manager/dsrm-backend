@@ -27,13 +27,13 @@ public class RoomController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
-    Room addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
+    public Room addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
         return roomService.addRoom(roomRequestDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/rooms/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes =MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoomDTO> getRoom(@PathVariable Long id){
+    public ResponseEntity<RoomDTO> getRoom(@PathVariable Long id){
         Optional<Room> room = roomService.getRoom(id);
         return ResponseEntity.of(room.map(roomMapper::roomToRoomDTO));
     }

@@ -27,13 +27,13 @@ public class RoomTypeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/room-types", consumes= MediaType.APPLICATION_JSON_VALUE)
-    RoomType addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
+    public RoomType addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
         return roomTypeService.addRoomType(roomTypeRequestDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/room-types/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoomTypeDTO> getRoomType(@PathVariable Long id){
+    public ResponseEntity<RoomTypeDTO> getRoomType(@PathVariable Long id){
         Optional<RoomType> room = roomTypeService.getRoomType(id);
         return ResponseEntity.of(room.map(roomTypeMapper::roomTypeToRoomTypeDTO));
     }
