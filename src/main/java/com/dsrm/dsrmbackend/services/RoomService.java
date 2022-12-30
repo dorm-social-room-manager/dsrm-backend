@@ -1,6 +1,14 @@
 package com.dsrm.dsrmbackend.services;
 
-import org.springframework.stereotype.Service;
+import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
+import com.dsrm.dsrmbackend.entities.Room;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Service
-public class RoomService {}
+import java.util.Optional;
+
+public interface RoomService {
+    Room addRoom(RoomRequestDTO roomDto);
+    Optional<Room> getRoom(Long roleId);
+    Page<Room> getRooms(Pageable pageable);
+}

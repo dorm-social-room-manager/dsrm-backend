@@ -1,6 +1,8 @@
 package com.dsrm.dsrmbackend.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,8 +12,11 @@ import java.time.LocalTime;
 @Entity(name = "rooms")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Room {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     @Column(name = "room_number")
     private Integer roomNumber;
@@ -28,8 +33,8 @@ public class Room {
     private LocalTime openingTime;
     @Column(name = "closing_time")
     private LocalTime closingTime;
-    @Column(name = "unavailability_start_date")
-    private LocalDate unavailabilityStartDate;
-    @Column(name = "unavailability_end_date")
-    private LocalDate unavailabilityEndDate;
+    @Column(name = "unavailable_start")
+    private LocalDate unavailableStart;
+    @Column(name = "unavailable_end")
+    private LocalDate unavailableEnd;
 }

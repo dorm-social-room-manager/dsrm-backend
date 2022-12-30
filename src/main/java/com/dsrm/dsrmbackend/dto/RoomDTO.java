@@ -18,6 +18,6 @@ public class RoomDTO {
     private User keyOwner;
     private LocalTime openingTime;
     private LocalTime closingTime;
-    private LocalDate unavailabilityStartDate;
-    private LocalDate unavailabilityEndDate;
+    private LocalDate unavailableStart;
+    private LocalDate unavailableEnd;
 }
