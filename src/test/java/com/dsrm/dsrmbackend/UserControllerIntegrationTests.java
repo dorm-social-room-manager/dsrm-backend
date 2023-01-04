@@ -30,6 +30,7 @@ import javax.servlet.ServletContext;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 class UserControllerIntegrationTests {
     @MockBean
-    private UserService userService;
+    private UserController userController;
 
     private MockMvc mockMvc;
 
@@ -61,33 +62,20 @@ class UserControllerIntegrationTests {
 
     @org.junit.jupiter.api.Test
     void retrieveNonExistingUser() throws Exception {
-        UserRequestDTO userRequestDTO  = new UserRequestDTO();
-        userRequestDTO.setName("Jan");
-        userRequestDTO.setEmail("Jan@gmail.com");
-        userRequestDTO.setSurname("Chraboszcz");
-        userRequestDTO.setPassword("Marciniak");
-        userRequestDTO.setRoles(null);
-        when(userService.addUser(userRequestDTO)).thenReturn(null);
-
         this.mockMvc
                 .perform(get("http://localhost:8080/users/1000").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 
     @org.junit.jupiter.api.Test
     void retrieveExistingUser() throws Exception {
-        User user  = new User();
-        user.setName("Jan");
-        user.setEmail("Jan@gmail.com");
-        user.setSurname("Chraboszcz");
-        user.setPassword("Marciniak");
-        user.setRoles(null);
-
         this.mockMvc.perform(get("http://localhost:8080/users/1").contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-         .andExpect(jsonPath("$.email", equalTo("Jan@gmail.com")))
+        ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
          .andExpect(jsonPath("$.name", equalTo("Jan")))
-         .andExpect(status().isOk());
+         .andExpect(status().isOk())
+         .andDo(print());
+
     }
 
     @org.junit.jupiter.api.Test
