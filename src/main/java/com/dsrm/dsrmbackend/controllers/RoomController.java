@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ public class RoomController {
     private final RoomService roomService;
     private final RoomMapper roomMapper;
 
+    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
     public Room addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
