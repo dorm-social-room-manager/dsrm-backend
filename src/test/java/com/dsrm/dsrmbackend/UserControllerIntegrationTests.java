@@ -1,19 +1,12 @@
 package com.dsrm.dsrmbackend;
-
-import com.dsrm.dsrmbackend.controllers.UserController;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
-import com.dsrm.dsrmbackend.entities.User;
-import com.dsrm.dsrmbackend.services.UserService;
-import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,11 +17,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
 import javax.servlet.ServletContext;
-
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,8 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(initializers = {UserControllerInitializer.class})
 @WebAppConfiguration
 class UserControllerIntegrationTests {
-    @MockBean
-    private UserController userController;
 
     private MockMvc mockMvc;
 
@@ -52,7 +40,7 @@ class UserControllerIntegrationTests {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void checkUserControllerExistAndContextWorkProperly() {
         ServletContext servletContext = context.getServletContext();
         Assertions.assertNotNull(servletContext);
@@ -60,25 +48,26 @@ class UserControllerIntegrationTests {
 
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void retrieveNonExistingUser() throws Exception {
         this.mockMvc
-                .perform(get("http://localhost:8080/users/1000").contentType(MediaType.APPLICATION_JSON))
+                .perform(get("/users/1000").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void retrieveExistingUser() throws Exception {
-        this.mockMvc.perform(get("http://localhost:8080/users/1").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(get("/users/1").contentType(MediaType.APPLICATION_JSON)
         ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
-         .andExpect(jsonPath("$.name", equalTo("Jan")))
-         .andExpect(status().isOk())
-         .andDo(print());
+        .andExpect(jsonPath("$.name", equalTo("Jan")))
+        .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
+        .andExpect(status().isOk())
+        .andDo(print());
 
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void addValidUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRequestDTO userRequestDTO  = new UserRequestDTO();
@@ -87,16 +76,19 @@ class UserControllerIntegrationTests {
         userRequestDTO.setSurname("Chraboszcz");
         userRequestDTO.setPassword("Marciniak");
         userRequestDTO.setRoles(null);
-        this.mockMvc.perform(post("http://localhost:8080/users")
+        this.mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().isCreated());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void retrieveUsersInRange() throws Exception {
-        this.mockMvc.perform(get("http://localhost:8080/users").contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk());
+        this.mockMvc.perform(get("/users?page=0%size=2")
+                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("Jan"))
+                .andExpect(jsonPath("$.content[1].name").value("Piotr"));
     }
 
 }

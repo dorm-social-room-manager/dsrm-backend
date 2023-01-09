@@ -7,6 +7,8 @@ import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.services.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +32,10 @@ public class UserController {
         return userService.addUser(userRequestDTO);
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes =MediaType.APPLICATION_JSON_VALUE)
+
+    @GetMapping(value = "/users/{id}")
     ResponseEntity<Optional<UserDTO>> getUser(@PathVariable Long id){
-        Optional<User> user = userService.getUser(id);
+            Optional<User> user = userService.getUser(id);
         return ResponseEntity.of(Optional.of(user.map(userMapper::toUserDTO)));
     }
 
