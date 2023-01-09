@@ -26,19 +26,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(initializers = {UserControllerInitializer.class})
+@ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
 @WebAppConfiguration
-class UserControllerIntegrationTests {
-
+@AutoConfigureMockMvc
+class UserControllerIntegrationTests extends  AbstractIntegrationTest{
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
-
-    @BeforeEach
-    public void setup() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
-    }
 
     @Test
     void checkUserControllerExistAndContextWorkProperly() {
