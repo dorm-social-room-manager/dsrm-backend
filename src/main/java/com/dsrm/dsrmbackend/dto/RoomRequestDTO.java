@@ -7,7 +7,6 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class RoomRequestDTO {
     private String name;
     private int number;
