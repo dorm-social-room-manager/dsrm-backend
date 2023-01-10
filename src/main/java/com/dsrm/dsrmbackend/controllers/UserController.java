@@ -35,8 +35,12 @@ public class UserController {
 
     @GetMapping(value = "/users/{id}")
     ResponseEntity<Optional<UserDTO>> getUser(@PathVariable Long id){
-            Optional<User> user = userService.getUser(id);
-        return ResponseEntity.of(Optional.of(user.map(userMapper::toUserDTO)));
+        Optional<User> user = userService.getUser(id);
+        if (user.isEmpty()) {
+            return  new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+        return  ResponseEntity.of(Optional.of(user.map(userMapper::toUserDTO)));
+
     }
 
     @GetMapping(value = "/users")
