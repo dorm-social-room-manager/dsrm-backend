@@ -18,7 +18,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.ServletContext;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -46,8 +45,8 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     void retrieveNonExistingUser() throws Exception {
         this.mockMvc
                 .perform(get("/users/1000").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                .andExpect(forwardedUrl(null))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -56,9 +55,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
         .andExpect(jsonPath("$.name", equalTo("Jan")))
         .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
-        .andExpect(status().isOk())
-        .andDo(print());
-
+        .andExpect(status().isOk());
     }
 
     @Test

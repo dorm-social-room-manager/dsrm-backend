@@ -12,7 +12,7 @@ import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 
 
-public class AbstractIntegrationTest{
+abstract class AbstractIntegrationTest{
 
 
     @Container
