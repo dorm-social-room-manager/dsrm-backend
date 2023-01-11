@@ -18,13 +18,13 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.ServletContext;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
-@WebAppConfiguration
 @AutoConfigureMockMvc
 class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     @Autowired
@@ -32,14 +32,6 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
     @Autowired
     private WebApplicationContext context;
-
-    @Test
-    void checkUserControllerExistAndContextWorkProperly() {
-        ServletContext servletContext = context.getServletContext();
-        Assertions.assertNotNull(servletContext);
-        Assertions.assertTrue(servletContext instanceof MockServletContext);
-
-    }
 
     @Test
     void retrieveNonExistingUser() throws Exception {
@@ -70,7 +62,9 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         this.mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequestDTO)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andExpect(header().stringValues("http://localhost/users/4"));
     }
 
     @Test
@@ -79,7 +73,10 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                  .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value("Jan"))
-                .andExpect(jsonPath("$.content[1].name").value("Piotr"));
+                .andExpect(jsonPath("$.content[0].surname").value("Kowalski"))
+                .andExpect(jsonPath("$.content[0].email").value("test01@wp.pl"))
+                .andExpect(jsonPath("$.content[1].name").value("Piotr"))
+                .andExpect(jsonPath("$.content[1].surname").value("Nowak"))
+                .andExpect(jsonPath("$.content[1].email").value("test02@wp.pl"));
     }
-
 }

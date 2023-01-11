@@ -16,7 +16,7 @@ abstract class AbstractIntegrationTest{
 
 
     @Container
-    public static MariaDBContainer container = new MariaDBContainer<>("mariadb:10")
+    public static final MariaDBContainer<?> container = new MariaDBContainer<>("mariadb:10")
             .withDatabaseName("user-test")
             .withUsername("1234")
             .withPassword("1234")

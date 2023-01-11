@@ -14,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -26,8 +28,14 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/users", consumes= MediaType.APPLICATION_JSON_VALUE)
-    User addUser(@RequestBody UserRequestDTO userRequestDTO) {
-        return userService.addUser(userRequestDTO);
+    public ResponseEntity<?> addUser(@RequestBody UserRequestDTO userRequestDTO) {
+        User user = userService.addUser(userRequestDTO);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(user.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping(value = "/users/{id}")
