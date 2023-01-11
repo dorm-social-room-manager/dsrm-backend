@@ -63,7 +63,6 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().isCreated())
-                .andDo(print())
                 .andExpect(header().stringValues("http://localhost/users/4"));
     }
 
