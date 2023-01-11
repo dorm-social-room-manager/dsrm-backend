@@ -1,8 +1,17 @@
 package com.dsrm.dsrmbackend.services;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {}
+import java.util.Optional;
+
+public interface UserService {
+
+    User addUser(UserRequestDTO userRequestDTO);
+
+    Optional<User> getUser(Long userId);
+
+    Page<User> getUsers(Pageable pageable);
+}

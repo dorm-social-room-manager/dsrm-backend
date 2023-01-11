@@ -17,7 +17,7 @@ import java.time.LocalTime;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     @Column(name = "room_number")
     private Integer roomNumber;
     private Integer floor;
