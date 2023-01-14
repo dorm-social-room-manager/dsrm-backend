@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {TestInitializer.class})
 public class RoomTypeControllerTests {
