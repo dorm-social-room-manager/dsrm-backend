@@ -31,13 +31,13 @@ public class RoomTypeController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/room-types", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomType> addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
+    public ResponseEntity<?> addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
         RoomType roomType = roomTypeService.addRoomType(roomTypeRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(roomType.getId()).toUri();
-        return ResponseEntity.created(location).body(roomType);
+        return ResponseEntity.created(location).build();
     }
 
     @ResponseStatus(HttpStatus.OK)
