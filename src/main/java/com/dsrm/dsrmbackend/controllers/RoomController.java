@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -29,8 +31,13 @@ public class RoomController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public Room addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
-        return roomService.addRoom(roomRequestDTO);
+    public ResponseEntity<Room> addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
+        Room room = roomService.addRoom(roomRequestDTO);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(room.getId()).toUri();
+        return ResponseEntity.created(location).body(room);
     }
 
     @ResponseStatus(HttpStatus.OK)
