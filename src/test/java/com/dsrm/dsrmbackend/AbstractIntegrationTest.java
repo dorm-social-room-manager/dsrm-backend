@@ -1,10 +1,6 @@
 package com.dsrm.dsrmbackend;
 
 
-import com.dsrm.dsrmbackend.controllers.UserController;
-import lombok.AllArgsConstructor;
-import org.junit.ClassRule;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
