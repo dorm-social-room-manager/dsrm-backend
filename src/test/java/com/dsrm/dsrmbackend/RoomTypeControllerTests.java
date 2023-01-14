@@ -1,7 +1,6 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,16 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(initializers = {TestInitializer.class})
 public class RoomTypeControllerTests {
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void addRoomType() throws Exception {
         RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
-        roomTypeRequestDTO.setName("Ping-Pong");
         ObjectMapper objectMapper = new ObjectMapper();
+        roomTypeRequestDTO.setName("Ping-Pong");
         this.mockMvc.perform(post("/room-types")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
