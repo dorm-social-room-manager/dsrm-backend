@@ -20,7 +20,8 @@ public class TestInitializer implements ApplicationContextInitializer<Configurab
         "spring.datasource.url=" + container.getJdbcUrl(),
         "spring.datasource.username=" + container.getUsername(),
         "spring.datasource.password=" + container.getPassword(),
-        "spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true"
+        "spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true",
+        "spring.jpa.hibernate.ddl-auto=update"
         ).applyTo(context.getEnvironment());
     }
 
