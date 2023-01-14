@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalTime;
 
 
@@ -19,8 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
 @SpringBootTest
@@ -31,23 +30,26 @@ public class RoomControllerTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     public void insertValidRoom() throws Exception {
+        LocalTime time = LocalTime.parse("12:00:00");
         RoomRequestDTO room = new RoomRequestDTO();
         room.setName("test");
         room.setNumber(203);
         room.setFloor(2);
-        room.setType(6L);
+        room.setType(2L);
         room.setMaxCapacity(3);
-        room.setOpeningTime(LocalTime.now());
-        room.setClosingTime(LocalTime.now());
-        ObjectMapper objectMapper = new ObjectMapper();
+        room.setOpeningTime(time);
+        room.setClosingTime(time);
 
         this.mockMvc.perform(post("/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(room)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value(room.getName()));
+                .andExpect(header().string("Location", "http://localhost/rooms/4"));
     }
 
     @Test

@@ -9,15 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
 @SpringBootTest
@@ -28,16 +26,18 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     public void addRoomType() throws Exception {
         RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
-        ObjectMapper objectMapper = new ObjectMapper();
         roomTypeRequestDTO.setName("Ping-Pong");
         this.mockMvc.perform(post("/room-types")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Ping-Pong"));
+                .andExpect(header().string("Location", "http://localhost/room-types/4"));
     }
 
     @Test
