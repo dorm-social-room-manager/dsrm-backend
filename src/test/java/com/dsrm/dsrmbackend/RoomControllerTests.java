@@ -25,9 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(initializers = {TestInitializer.class})
+@ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
 @AutoConfigureMockMvc
-public class RoomControllerTests {
+public class RoomControllerTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 

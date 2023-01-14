@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-@ContextConfiguration(initializers = {TestInitializer.class})
-public class RoomTypeControllerTests {
+@ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
+public class RoomTypeControllerTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
