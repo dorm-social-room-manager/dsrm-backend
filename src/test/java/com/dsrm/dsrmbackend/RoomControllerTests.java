@@ -1,92 +1,101 @@
 package com.dsrm.dsrmbackend;
 
-import com.dsrm.dsrmbackend.controllers.RoomController;
-import com.dsrm.dsrmbackend.dto.RoomDTO;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
-import com.dsrm.dsrmbackend.entities.Room;
-import lombok.RequiredArgsConstructor;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.MariaDBContainer;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalTime;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@Testcontainers
 @SpringBootTest
-@RequiredArgsConstructor
-@ContextConfiguration(initializers = {RoomControllerTests.Initializer.class})
-public class RoomControllerTests {
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
+@AutoConfigureMockMvc
+public class RoomControllerTests extends AbstractIntegrationTest {
+    @Autowired
+    private MockMvc mockMvc;
 
     @Autowired
-    private RoomController controller;
-    @ClassRule
-    public static MariaDBContainer container = new MariaDBContainer<>("mariadb:10")
-            .withDatabaseName("room-test")
-            .withUsername("test")
-            .withPassword("test")
-            .withInitScript("dsrm_database.sql");
+    ObjectMapper objectMapper;
 
-    // Set configuration for test MariaDB Container
-    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + container.getJdbcUrl(),
-                    "spring.datasource.username=" + container.getUsername(),
-                    "spring.datasource.password=" + container.getPassword(),
-                    "spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true"
-            ).applyTo(context.getEnvironment());
-        }
+    @Test
+    public void insertValidRoom() throws Exception {
+        LocalTime time = LocalTime.parse("12:00:00");
+        RoomRequestDTO room = new RoomRequestDTO();
+        room.setName("test");
+        room.setNumber(203);
+        room.setFloor(2);
+        room.setType(2L);
+        room.setMaxCapacity(3);
+        room.setOpeningTime(time);
+        room.setClosingTime(time);
+
+        this.mockMvc.perform(post("/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(room)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/rooms/4"));
     }
 
     @Test
-    public void insertValidRoom() {
-        RoomRequestDTO roomRequestDTO = new RoomRequestDTO("test", 203, 2, 3,
-                6, LocalTime.now(), LocalTime.now());
-        Room room = controller.addRoom(roomRequestDTO);
-        assertNotNull(room);
-        assertEquals(203, room.getRoomNumber());
+    public void getExistentRoom() throws Exception {
+        this.mockMvc.perform(get("/rooms/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roomNumber").value(111))
+                .andExpect(jsonPath("$.floor").value(1))
+                .andExpect(jsonPath("$.roomType.id").value(1))
+                .andExpect(jsonPath("$.maxCapacity").value(2))
+                .andExpect(jsonPath("$.openingTime").value("12:00:00"))
+                .andExpect(jsonPath("$.closingTime").value("23:00:00"))
+                .andExpect(jsonPath("$.unavailableStart").value(is(nullValue())))
+                .andExpect(jsonPath("$.unavailableEnd").value(is(nullValue())));
+
     }
 
     @Test
-    public void getExististentRoom() {
-        ResponseEntity<RoomDTO> response = controller.getRoom(1L);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        RoomDTO room = response.getBody();
-        assertNotNull(room);
-        assertEquals(111, room.getRoomNumber());
+    public void tryToGetNonexistentRoom() throws Exception {
+        this.mockMvc.perform(get("/rooms/1512")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    public void tryToGetNonexistentRoom() {
-        ResponseEntity<RoomDTO> response = controller.getRoom(5124L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        RoomDTO room = response.getBody();
-        assertNull(room);
-    }
+    public void getRoomsInRange() throws Exception {
+        this.mockMvc.perform(get("/rooms?page=0%size=2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].roomNumber").value(111))
+                .andExpect(jsonPath("$.content[0].floor").value(1))
+                .andExpect(jsonPath("$.content[0].roomType.id").value(1))
+                .andExpect(jsonPath("$.content[0].maxCapacity").value(2))
+                .andExpect(jsonPath("$.content[0].openingTime").value("12:00:00"))
+                .andExpect(jsonPath("$.content[0].closingTime").value("23:00:00"))
+                .andExpect(jsonPath("$.content[0].unavailableStart").value(is(nullValue())))
+                .andExpect(jsonPath("$.content[0].unavailableEnd").value(is(nullValue())))
+                .andExpect(jsonPath("$.content[1].roomNumber").value(112))
+                .andExpect(jsonPath("$.content[1].floor").value(1))
+                .andExpect(jsonPath("$.content[1].roomType.id").value(1))
+                .andExpect(jsonPath("$.content[1].maxCapacity").value(2))
+                .andExpect(jsonPath("$.content[1].openingTime").value("12:00:00"))
+                .andExpect(jsonPath("$.content[1].closingTime").value("23:00:00"))
+                .andExpect(jsonPath("$.content[1].unavailableStart").value(is(nullValue())))
+                .andExpect(jsonPath("$.content[1].unavailableEnd").value(is(nullValue())));
 
-    @Test
-    public void getRoomsInRange(){
-        Pageable pageable = PageRequest.of(0,2);
-        ResponseEntity<Page<RoomDTO>> response = controller.readRooms(pageable);
-        Page<RoomDTO> page = response.getBody();
-        assertNotNull(page);
-        List<RoomDTO> rooms = page.getContent();
-        assertEquals(2, rooms.size());
     }
 }

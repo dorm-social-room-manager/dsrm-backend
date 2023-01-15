@@ -1,89 +1,67 @@
 package com.dsrm.dsrmbackend;
 
-import com.dsrm.dsrmbackend.controllers.RoomTypeController;
-import com.dsrm.dsrmbackend.dto.RoomTypeDTO;
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
-import com.dsrm.dsrmbackend.entities.RoomType;
-import lombok.RequiredArgsConstructor;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.MariaDBContainer;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@RunWith(SpringRunner.class)
+@Testcontainers
 @SpringBootTest
-@RequiredArgsConstructor
-@ContextConfiguration(initializers = {RoomTypeControllerTests.Initializer.class})
-public class RoomTypeControllerTests {
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
+@ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
+public class RoomTypeControllerTests extends AbstractIntegrationTest {
     @Autowired
-    private RoomTypeController controller;
-    @ClassRule
-    public static MariaDBContainer container = new MariaDBContainer<>("mariadb:10")
-            .withDatabaseName("room-test")
-            .withUsername("test")
-            .withPassword("test")
-            .withInitScript("dsrm_database.sql");
+    private MockMvc mockMvc;
 
-    // Set configuration for test MariaDB Container
-    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + container.getJdbcUrl(),
-                    "spring.datasource.username=" + container.getUsername(),
-                    "spring.datasource.password=" + container.getPassword(),
-                    "spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true"
-            ).applyTo(context.getEnvironment());
-        }
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Test
+    public void addRoomType() throws Exception {
+        RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
+        roomTypeRequestDTO.setName("Ping-Pong");
+        this.mockMvc.perform(post("/room-types")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/room-types/4"));
     }
 
     @Test
-    public void addRoomType() {
-        RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO("Ping-Pong");
-        RoomType roomType = controller.addRoomType(roomTypeRequestDTO);
-        assertNotNull(roomType);
+    public void getExistentRoomType() throws Exception {
+        this.mockMvc.perform(get("/room-types/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Pokoj mieszkalny"));
     }
 
     @Test
-    public void getExistentRoomType() {
-        ResponseEntity<RoomTypeDTO> response = controller.getRoomType(1L);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        RoomTypeDTO roomType = response.getBody();
-        assertNotNull(roomType);
-        assertEquals("Pokoj mieszkalny", roomType.getName());
+    public void tryToGetNonexistentRoomType() throws Exception {
+        this.mockMvc.perform(get("/room-types/1512")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
     }
 
     @Test
-    public void tryToGetNonexistentRoomType() {
-        ResponseEntity<RoomTypeDTO> response = controller.getRoomType(5124L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        RoomTypeDTO roomType = response.getBody();
-        assertNull(roomType);
-    }
-
-    @Test
-    public void getRoomTypesInRange() {
-        Pageable pageable = PageRequest.of(0,2);
-        ResponseEntity<Page<RoomTypeDTO>> response = controller.readRoomTypes(pageable);
-        Page<RoomTypeDTO> page = response.getBody();
-        assertNotNull(page);
-        List<RoomTypeDTO> rooms = page.getContent();
-        assertEquals(2, rooms.size());
+    public void getRoomTypesInRange() throws Exception {
+                this.mockMvc.perform(get("/room-types?page=0%size=2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.content[0].name").value("Pokoj mieszkalny"))
+                        .andExpect(jsonPath("$.content[1].name").value("Sala telewizyjna"));
     }
 
 }

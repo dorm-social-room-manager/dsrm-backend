@@ -10,13 +10,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -25,10 +28,16 @@ public class RoomController {
     private final RoomService roomService;
     private final RoomMapper roomMapper;
 
+    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/rooms", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public Room addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
-        return roomService.addRoom(roomRequestDTO);
+    public ResponseEntity<Void> addRoom(@RequestBody RoomRequestDTO roomRequestDTO) {
+        Room room = roomService.addRoom(roomRequestDTO);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(room.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @ResponseStatus(HttpStatus.OK)
