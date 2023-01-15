@@ -31,7 +31,7 @@ public class RoomTypeController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/room-types", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
+    public ResponseEntity<Void> addRoomType(@RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
         RoomType roomType = roomTypeService.addRoomType(roomTypeRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
