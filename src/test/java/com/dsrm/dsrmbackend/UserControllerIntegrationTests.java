@@ -1,19 +1,23 @@
 package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import static org.hamcrest.Matchers.equalTo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -87,4 +91,36 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
     }
 
+
+    @Test
+    void validPatchExistingUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<Long> longs = new ArrayList<>();
+        longs.add(1L);
+        userRolesOnlyDTO.setRoles(longs);
+        this.mockMvc.perform(patch("/users/1/roles").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
+                ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
+                .andExpect(jsonPath("$.name", equalTo("Jan")))
+                .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
+                .andExpect(jsonPath("$.roles[0].id", equalTo(1)))
+                .andExpect(jsonPath("$.roles[0].name", equalTo("student")))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void patchNonExistingUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<Long> longs = new ArrayList<>();
+        longs.add(1L);
+        userRolesOnlyDTO.setRoles(longs);
+        this.mockMvc.perform(patch("/users/100/roles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
+                ).andExpect(forwardedUrl(null))
+                 .andExpect(status().isNotFound());
+    }
 }

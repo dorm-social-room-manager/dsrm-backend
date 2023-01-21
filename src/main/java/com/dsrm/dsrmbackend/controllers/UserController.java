@@ -2,6 +2,7 @@ package com.dsrm.dsrmbackend.controllers;
 
 import com.dsrm.dsrmbackend.dto.UserDTO;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.services.UserService;
@@ -50,4 +51,11 @@ public class UserController {
         Page<User> userPage = userService.getUsers(pageable,isPending);
         return new ResponseEntity<>(userPage.map(userMapper::toUserDTO),HttpStatus.OK);
     }
+
+    @PatchMapping(value = "/users/{id}/roles")
+    ResponseEntity<UserDTO> partialUpdateUser(@PathVariable Long id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
+        Optional<User> userOptional = userService.updateUser(userRolesOnlyDTO,id);
+        return  ResponseEntity.of((userOptional.map(userMapper::toUserDTO)));
+    }
+
 }

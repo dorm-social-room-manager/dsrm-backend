@@ -1,7 +1,7 @@
 package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
-import com.dsrm.dsrmbackend.entities.Role;
+import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
@@ -35,6 +35,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getUsers(Pageable pageable){
         return userRepo.findAll(pageable);
+    }
+
+    @Override
+    public Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, Long id) {
+        final Optional<User> user = userRepo.findById(id);
+        user.ifPresent(userEntity -> updateUserRoles(userRolesOnlyDTO, userEntity));
+        return user;
+    }
+
+    @Override
+    public void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user) {
+        if (userRolesOnlyDTO == null || userRolesOnlyDTO.getRoles() == null)
+            return;
+        User userRole = userMapper.toUserRoles(userRolesOnlyDTO);
+        user.setRoles(userRole.getRoles());
+        userRepo.save(user);
     }
 
     @Override
