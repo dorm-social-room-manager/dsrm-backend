@@ -75,4 +75,16 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 .andExpect(jsonPath("$.content[1].surname").value("Nowak"))
                 .andExpect(jsonPath("$.content[1].email").value("test02@wp.pl"));
     }
+
+    @Test
+    void retrieveUsersWithoutRoles() throws Exception {
+        this.mockMvc.perform(get("/users?isPending=true")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("Stefan"))
+                .andExpect(jsonPath("$.content[0].surname").value("Grabowski"))
+                .andExpect(jsonPath("$.content[0].email").value("test03@wp.pl"));
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
@@ -33,6 +34,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getUsers(Pageable pageable){
         return userRepo.findAll(pageable);
+    }
+
+    @Override
+    public Page<User> getUsersWithRoles(Role roles, Pageable pageable) {
+        return userRepo.findUserByRoles(roles,pageable);
     }
 
 }

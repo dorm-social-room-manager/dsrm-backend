@@ -46,8 +46,12 @@ public class UserController {
 
     @GetMapping(value = "/users")
     @PageableAsQueryParam
-    public ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) Pageable pageable) {
-        Page<User> userPage = userService.getUsers(pageable);
+    public ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false,defaultValue = "false") boolean isPending) {
+        Page<User> userPage;
+        if (isPending)
+             userPage = userService.getUsersWithRoles(null,pageable);
+        else
+             userPage = userService.getUsers(pageable);
         return new ResponseEntity<>(userPage.map(userMapper::toUserDTO),HttpStatus.OK);
     }
 }

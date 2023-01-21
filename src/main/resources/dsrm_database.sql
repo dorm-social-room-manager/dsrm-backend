@@ -110,6 +110,14 @@ VALUES (101, 1, 2, 6, 2, (120000), (230000), null, null);
 INSERT INTO roles(name) VALUES ('Administrator');
 INSERT INTO roles(name) VALUES ('Uzytkownik');
 
+INSERT INTO roles(id, name)
+VALUES (1,'student');
+
+INSERT INTO users_roles(id, role_id,user_id)
+VALUES (1,1,1);
+
+INSERT INTO users_roles(id, role_id,user_id)
+VALUES (2,1,2);
 
 INSERT INTO reservations(room_id, start_time, end_time, user_id)
 VALUES(1,str_to_date('02,02,2023 12,00,00', '%d,%m,%Y %H,%i,%S'),str_to_date('02,02,2023 13,00,00', '%d,%m,%Y %H,%i,%S'),3);
