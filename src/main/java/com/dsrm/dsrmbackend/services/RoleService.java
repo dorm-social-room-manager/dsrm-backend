@@ -1,6 +1,16 @@
 package com.dsrm.dsrmbackend.services;
 
-import org.springframework.stereotype.Service;
+import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
+import com.dsrm.dsrmbackend.entities.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Service
-public class RoleService {}
+import java.util.Optional;
+
+public interface RoleService {
+    Role addRole(RoleRequestDTO roleRequestDto);
+
+    Optional<Role> getRole(Long roleId);
+
+    Page<Role> getRoles(Pageable pageable);
+}
