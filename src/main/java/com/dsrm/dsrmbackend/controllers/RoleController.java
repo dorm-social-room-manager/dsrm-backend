@@ -28,10 +28,9 @@ public class RoleController {
     private final RoleService roleService;
     private final RoleMapper roleMapper;
 
-    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/roles", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addRole(@RequestBody RoleRequestDTO roleRequestDTO) {
+    public ResponseEntity<Void> addRole(@RequestBody RoleRequestDTO roleRequestDTO) {
         Role role = roleService.addRole(roleRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

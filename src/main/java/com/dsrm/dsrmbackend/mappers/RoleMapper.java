@@ -1,17 +1,16 @@
 package com.dsrm.dsrmbackend.mappers;
 
-        import com.dsrm.dsrmbackend.dto.RoleDTO;
-        import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
-        import com.dsrm.dsrmbackend.entities.Role;
-        import org.mapstruct.Mapper;
-        import org.mapstruct.Mapping;
+import com.dsrm.dsrmbackend.dto.RoleDTO;
+import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
+import com.dsrm.dsrmbackend.entities.Role;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-        import java.util.List;
-        import java.util.Set;
+import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
-    @Mapping(target = "id", ignore = true)
     Role roleReqDTOToRole(RoleRequestDTO roleReqDto);
 
     RoleDTO roleToRoleDTO(Role role);
