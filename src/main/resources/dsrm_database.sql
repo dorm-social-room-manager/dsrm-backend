@@ -113,10 +113,10 @@ INSERT INTO roles(name) VALUES ('Uzytkownik');
 INSERT INTO roles(id, name)
 VALUES (1,'student');
 
-INSERT INTO users_roles(id, role_id,user_id)
+INSERT INTO user_roles(id, role_id,user_id)
 VALUES (1,1,1);
 
-INSERT INTO users_roles(id, role_id,user_id)
+INSERT INTO user_roles(id, role_id,user_id)
 VALUES (2,1,2);
 
 INSERT INTO reservations(room_id, start_time, end_time, user_id)

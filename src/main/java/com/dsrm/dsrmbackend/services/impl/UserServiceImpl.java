@@ -9,6 +9,7 @@ import com.dsrm.dsrmbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -37,8 +38,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getUsersWithRoles(Role roles, Pageable pageable) {
-        return userRepo.findUserByRoles(roles,pageable);
+    public Page<User> getUsers(Pageable pageable, boolean isPending){
+        Specification<User> userSpecification = Specification.where(null);
+        if (isPending) {
+            userSpecification = userSpecification.and(
+                    (Specification<User>) (root, query, criteriaBuilder) -> criteriaBuilder.isEmpty(root.get("roles"))
+            );
+        }
+        return userRepo.findAll(userSpecification, pageable);
     }
 
 }
