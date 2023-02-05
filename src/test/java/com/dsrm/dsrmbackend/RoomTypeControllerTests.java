@@ -1,6 +1,7 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +39,16 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
     public void addRoomType() throws Exception {
         RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
         roomTypeRequestDTO.setName("Ping-Pong");
-        this.mockMvc.perform(post("/room-types")
+        MvcResult result = this.mockMvc.perform(post("/room-types")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/room-types/4"));
+                .andReturn();
+        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        this.mockMvc.perform(get(location)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Ping-Pong"));
     }
 
     @Test
@@ -61,7 +68,9 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void getRoomTypesInRange() throws Exception {
-                this.mockMvc.perform(get("/room-types?page=0%size=2")
+                this.mockMvc.perform(get("/room-types")
+                        .param("page", "0")
+                        .param("size", "2")
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.content[0].name").value("Pokoj mieszkalny"))

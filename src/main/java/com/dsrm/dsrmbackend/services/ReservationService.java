@@ -13,9 +13,9 @@ public interface ReservationService {
 
     Reservation addReservation(ReservationRequestDTO reservationRequestDTO);
 
-    Optional<Reservation> getReservation(Long id);
+    Optional<Reservation> getReservation(String id);
 
     Page<Reservation> getReservations (Pageable pageable);
 
-    Page<Reservation> getReservations(Pageable pageable, Long userId);
+    Page<Reservation> getReservations(Pageable pageable, String userId);
 }

@@ -1,5 +1,6 @@
 package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.jayway.jsonpath.JsonPath;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
@@ -20,6 +21,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -79,17 +81,26 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         userRequestDTO.setSurname("Chraboszcz");
         userRequestDTO.setPassword("Marciniak");
         userRequestDTO.setRoles(null);
-        this.mockMvc.perform(post("/users")
+        MvcResult result = this.mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/users/4"));
+                .andReturn();
+        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        this.mockMvc.perform(get(location)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Jan"))
+                .andExpect(jsonPath("$.surname").value("Chraboszcz"))
+                .andExpect(jsonPath("$.email").value("Jan@gmail.com"));
     }
 
     @Test
     void retrieveUsersInRange() throws Exception {
-        this.mockMvc.perform(get("/users?page=0%size=2")
-                 .contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value("Jan"))
                 .andExpect(jsonPath("$.content[0].surname").value("Kowalski"))
@@ -116,13 +127,13 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     void validPatchExistingUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
-        List<Long> longs = new ArrayList<>();
-        longs.add(1L);
+        List<String> longs = new ArrayList<>();
+        longs.add(String.valueOf(1L));
         userRolesOnlyDTO.setRoles(longs);
         this.mockMvc.perform(patch("/users/1/roles").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
                 ).andExpect(status().isOk());
-        Optional<User> optionalUser = userRepo.findById(1L);
+        Optional<User> optionalUser = userRepo.findById(String.valueOf(1L));
         Assertions.assertTrue(optionalUser.isPresent());
         Assertions.assertEquals("Administrator", optionalUser.get().getRoles().stream().toList().get(0).getName());
     }
@@ -131,8 +142,8 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     void patchNonExistingUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
-        List<Long> longs = new ArrayList<>();
-        longs.add(1L);
+        List<String> longs = new ArrayList<>();
+        longs.add(String.valueOf(1L));
         userRolesOnlyDTO.setRoles(longs);
         this.mockMvc.perform(patch("/users/100/roles")
                 .contentType(MediaType.APPLICATION_JSON)

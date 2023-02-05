@@ -2,6 +2,7 @@ package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -61,11 +63,16 @@ public class RoleControllerTests extends AbstractIntegrationTest {
     public void addRole() throws Exception {
         RoleRequestDTO roleRequestDTO = new RoleRequestDTO();
         roleRequestDTO.setName("Moderator");
-        this.mockMvc.perform(post("/roles")
+        MvcResult result = this.mockMvc.perform(post("/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(roleRequestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/roles/4"));
+                .andReturn();
+        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        this.mockMvc.perform(get(location)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Moderator"));
     }
 
 }

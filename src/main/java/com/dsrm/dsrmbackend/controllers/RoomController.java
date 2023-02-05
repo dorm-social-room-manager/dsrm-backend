@@ -43,7 +43,7 @@ public class RoomController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/rooms/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes =MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomDTO> getRoom(@PathVariable Long id){
+    public ResponseEntity<RoomDTO> getRoom(@PathVariable String id){
         Optional<Room> room = roomService.getRoom(id);
         return ResponseEntity.of(room.map(roomMapper::roomToRoomDTO));
     }

@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{id}")
-    ResponseEntity<UserDTO> getUser(@PathVariable Long id){
+    ResponseEntity<UserDTO> getUser(@PathVariable String id){
         Optional<User> user = userService.getUser(id);
         return  ResponseEntity.of((user.map(userMapper::toUserDTO)));
     }
@@ -56,8 +56,8 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/users/{id}/roles")
-    ResponseEntity<Void> partialUpdateUser(@PathVariable Long id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
-        Optional<User> user =  userService.updateUser(userRolesOnlyDTO,id);
+    ResponseEntity<Void> partialUpdateUser(@PathVariable String id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
+        Optional<User> user =  userService.updateUser(userRolesOnlyDTO, id);
         if(user.isPresent())
             return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();

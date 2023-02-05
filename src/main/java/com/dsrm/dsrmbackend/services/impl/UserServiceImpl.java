@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +31,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addUser(UserRequestDTO userRequestDTO){
         User user = userMapper.toUser(userRequestDTO);
+        user.setId(UUID.randomUUID().toString());
         return userRepo.save(user);
     }
 
     @Override
-    public Optional<User> getUser(Long userId) {
+    public Optional<User> getUser(String userId) {
         return userRepo.findById(userId);
     }
 
@@ -45,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, Long id) {
+    public Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, String id) {
         final Optional<User> user = userRepo.findById(id);
         user.ifPresent(userEntity -> updateUserRoles(userRolesOnlyDTO, userEntity));
         return user;

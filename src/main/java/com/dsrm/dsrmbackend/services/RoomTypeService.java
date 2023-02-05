@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface RoomTypeService {
     RoomType addRoomType(RoomTypeRequestDTO roomTypeReqDto);
-    Optional<RoomType> getRoomType(Long roomId);
+    Optional<RoomType> getRoomType(String roomId);
 
     Page<RoomType> getRoomTypes(Pageable pageable);
 }

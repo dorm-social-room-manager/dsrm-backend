@@ -42,7 +42,7 @@ public class RoleController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/roles/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoleDTO> getRole(@PathVariable Long id) {
+    public ResponseEntity<RoleDTO> getRole(@PathVariable String id) {
         Optional<Role> role = roleService.getRole(id);
         return ResponseEntity.of(role.map(roleMapper::roleToRoleDTO));
     }

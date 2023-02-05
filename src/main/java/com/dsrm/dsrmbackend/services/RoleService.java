@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface RoleService {
     Role addRole(RoleRequestDTO roleRequestDto);
 
-    Optional<Role> getRole(Long roleId);
+    Optional<Role> getRole(String roleId);
 
     Page<Role> getRoles(Pageable pageable);
 }

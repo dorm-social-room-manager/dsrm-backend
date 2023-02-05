@@ -14,5 +14,5 @@ public interface UserMapper {
 
     UserDTO toUserDTO(User user);
 
-    User toUser(Long id);
+    User toUser(String id);
 }

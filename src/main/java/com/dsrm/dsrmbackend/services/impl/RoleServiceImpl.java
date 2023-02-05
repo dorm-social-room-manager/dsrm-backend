@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,11 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapper roleMapper;
     public Role addRole(RoleRequestDTO roleRequestDto) {
         Role role = roleMapper.roleReqDTOToRole(roleRequestDto);
+        role.setId(UUID.randomUUID().toString());
         return repository.save(role);
     }
 
-    public Optional<Role> getRole(Long roleId) {
+    public Optional<Role> getRole(String roleId) {
         return repository.findById(roleId);
     }
 

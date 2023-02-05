@@ -2,6 +2,7 @@ package com.dsrm.dsrmbackend;
 
 
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
+import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -67,11 +69,19 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
         body.put("openingTime","2023-02-21 12:20:00");
         body.put("closingTime","2023-02-22 13:20:00");
         body.put("user",2);
-        this.mockMvc.perform(post("/reservations")
+        MvcResult result = this.mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString((body))))
                         .andExpect(status().isCreated())
-                        .andExpect(header().string("Location", "http://localhost/reservations/3"));
+                .andReturn();
+        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        this.mockMvc.perform(get(location)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.room.id").value(1))
+                .andExpect(jsonPath("$.startTime").value("2023-02-21 12:20:00"))
+                .andExpect(jsonPath("$.endTime").value("2023-02-22 13:20:00"))
+                .andExpect(jsonPath("$.user.id").value(2));
     }
 
     @Test

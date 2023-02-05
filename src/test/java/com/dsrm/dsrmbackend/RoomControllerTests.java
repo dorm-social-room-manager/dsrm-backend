@@ -1,6 +1,7 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
+import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,11 +52,23 @@ public class RoomControllerTests extends AbstractIntegrationTest {
         room.setOpeningTime(time);
         room.setClosingTime(time);
 
-        this.mockMvc.perform(post("/rooms")
+        MvcResult result =  this.mockMvc.perform(post("/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(room)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/rooms/4"));
+                .andReturn();
+        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        this.mockMvc.perform(get(location)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roomNumber").value(203))
+                .andExpect(jsonPath("$.floor").value(2))
+                .andExpect(jsonPath("$.roomType.id").value(2))
+                .andExpect(jsonPath("$.maxCapacity").value(3))
+                .andExpect(jsonPath("$.openingTime").value("12:00:00"))
+                .andExpect(jsonPath("$.closingTime").value("12:00:00"))
+                .andExpect(jsonPath("$.unavailableStart").value(is(nullValue())))
+                .andExpect(jsonPath("$.unavailableEnd").value(is(nullValue())));
     }
 
     @Test
@@ -82,8 +96,10 @@ public class RoomControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void getRoomsInRange() throws Exception {
-        this.mockMvc.perform(get("/rooms?page=0%size=2")
-                        .contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("page", "0")
+                        .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].roomNumber").value(111))
                 .andExpect(jsonPath("$.content[0].floor").value(1))

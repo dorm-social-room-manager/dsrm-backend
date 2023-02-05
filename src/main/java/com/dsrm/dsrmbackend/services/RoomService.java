@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface RoomService {
     Room addRoom(RoomRequestDTO roomDto);
-    Optional<Room> getRoom(Long roleId);
+    Optional<Room> getRoom(String roleId);
     Page<Room> getRooms(Pageable pageable);
 }

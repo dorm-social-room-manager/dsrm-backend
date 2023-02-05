@@ -43,7 +43,7 @@ public class RoomTypeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/room-types/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomTypeDTO> getRoomType(@PathVariable Long id){
+    public ResponseEntity<RoomTypeDTO> getRoomType(@PathVariable String id){
         Optional<RoomType> room = roomTypeService.getRoomType(id);
         return ResponseEntity.of(room.map(roomTypeMapper::roomTypeToRoomTypeDTO));
     }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,11 @@ public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
     public Room addRoom(RoomRequestDTO roomDto) {
         Room room = roomMapper.roomReqDTOToRoom(roomDto);
+        room.setId(UUID.randomUUID().toString());
         return repository.save(room);
     }
 
-    public Optional<Room> getRoom(Long roleId) {
+    public Optional<Room> getRoom(String roleId) {
         return repository.findById(roleId);
     }
 
