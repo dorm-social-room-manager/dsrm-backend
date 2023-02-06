@@ -36,9 +36,6 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private ReservationMapper reservationMapper;
-
     @Test
     void retrieveNonExistingReservation() throws Exception {
         this.mockMvc
