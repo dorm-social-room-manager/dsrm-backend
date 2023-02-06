@@ -117,7 +117,5 @@ VALUES(1,str_to_date('02,02,2023 12,00,00', '%d,%m,%Y %H,%i,%S'),str_to_date('02
 INSERT INTO reservations(room_id, start_time, end_time, user_id)
 VALUES(1,str_to_date('03,02,2023 12,00,00', '%d,%m,%Y %H,%i,%S'),str_to_date('03,02,2023 13,00,00', '%d,%m,%Y %H,%i,%S'),2);
 
-INSERT INTO roles(name) VALUES ('Administrator');
-INSERT INTO roles(name) VALUES ('Uzytkownik');
 -- End of file.
 
