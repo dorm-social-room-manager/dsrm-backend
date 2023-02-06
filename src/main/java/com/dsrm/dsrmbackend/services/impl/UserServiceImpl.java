@@ -2,8 +2,10 @@ package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
+import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
+import com.dsrm.dsrmbackend.repositories.RoleRepo;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final UserMapper userMapper;
+    private final RoleRepo roleRepo;
 
     @Override
     public User addUser(UserRequestDTO userRequestDTO){
@@ -37,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll(pageable);
     }
 
+    @Transactional
     @Override
     public Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, Long id) {
         final Optional<User> user = userRepo.findById(id);
@@ -44,12 +51,13 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Transactional
     @Override
     public void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user) {
         if (userRolesOnlyDTO == null || userRolesOnlyDTO.getRoles() == null)
             return;
-        User userRole = userMapper.toUserRoles(userRolesOnlyDTO);
-        user.setRoles(userRole.getRoles());
+        Set<Role> userRoles = userRolesOnlyDTO.getRoles().stream().map(roleRepo::getReferenceById).collect(Collectors.toSet());
+        user.setRoles(userRoles);
         userRepo.save(user);
     }
 

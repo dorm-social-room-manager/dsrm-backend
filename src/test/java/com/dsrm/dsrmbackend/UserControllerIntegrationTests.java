@@ -1,6 +1,7 @@
 package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
+import com.dsrm.dsrmbackend.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     void retrieveNonExistingUser() throws Exception {

@@ -52,10 +52,16 @@ public class UserController {
         return new ResponseEntity<>(userPage.map(userMapper::toUserDTO),HttpStatus.OK);
     }
 
+
+    @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/users/{id}/roles")
-    ResponseEntity<UserDTO> partialUpdateUser(@PathVariable Long id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
-        Optional<User> userOptional = userService.updateUser(userRolesOnlyDTO,id);
-        return  ResponseEntity.of((userOptional.map(userMapper::toUserDTO)));
+    ResponseEntity<Void> partialUpdateUser(@PathVariable Long id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
+        Optional<User> user =  userService.updateUser(userRolesOnlyDTO,id);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(user.get().getId()).toUri();
+        return null;
     }
 
 }
