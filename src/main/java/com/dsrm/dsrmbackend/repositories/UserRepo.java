@@ -6,9 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.transaction.Transactional;
 
-@Transactional
 public interface UserRepo extends JpaRepository<User,Long>{
     Page<User> findAll(Specification<User> userSpecification, Pageable pageable);
 }
