@@ -28,7 +28,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/users", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addUser(@RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<Void> addUser(@RequestBody UserRequestDTO userRequestDTO) {
         User user = userService.addUser(userRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

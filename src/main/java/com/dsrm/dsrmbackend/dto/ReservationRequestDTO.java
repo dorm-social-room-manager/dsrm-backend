@@ -1,7 +1,7 @@
 package com.dsrm.dsrmbackend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 @Setter
 public class ReservationRequestDTO {
     private long room;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openingTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime closingTime;
     private long user;
 }

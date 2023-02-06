@@ -53,12 +53,12 @@ CREATE TABLE users (
     CONSTRAINT users_pk PRIMARY KEY (id)
 );
 
--- Table: users_roles
-CREATE TABLE users_roles (
+-- Table: user_roles
+CREATE TABLE user_roles (
     id int NOT NULL AUTO_INCREMENT,
     role_id int NOT NULL,
     user_id int NOT NULL,
-    CONSTRAINT users_roles_pk PRIMARY KEY (id)
+    CONSTRAINT user_roles_pk PRIMARY KEY (id)
 ) COMMENT 'e.g. card, cash, paypal, wire transfer';
 
 -- foreign keys
@@ -78,12 +78,12 @@ ALTER TABLE rooms ADD CONSTRAINT rooms_room_types FOREIGN KEY (type_id)
 ALTER TABLE rooms ADD CONSTRAINT rooms_users FOREIGN KEY (key_owner_id)
     REFERENCES users (id);
 
--- Reference: users_roles_roles (table: users_roles)
-ALTER TABLE users_roles ADD CONSTRAINT users_roles_roles FOREIGN KEY (role_id)
+-- Reference: user_roles_roles (table: user_roles)
+ALTER TABLE user_roles ADD CONSTRAINT user_roles_roles FOREIGN KEY (role_id)
     REFERENCES roles (id);
 
--- Reference: users_roles_users (table: users_roles)
-ALTER TABLE users_roles ADD CONSTRAINT users_roles_users FOREIGN KEY (user_id)
+-- Reference: user_roles_users (table: user_roles)
+ALTER TABLE user_roles ADD CONSTRAINT user_roles_users FOREIGN KEY (user_id)
     REFERENCES users (id);
 
 INSERT INTO room_types(name) VALUES ('Pokoj mieszkalny');
@@ -109,6 +109,13 @@ VALUES (101, 1, 2, 6, 2, (120000), (230000), null, null);
 
 INSERT INTO roles(name) VALUES ('Administrator');
 INSERT INTO roles(name) VALUES ('Uzytkownik');
+
+
+INSERT INTO reservations(room_id, start_time, end_time, user_id)
+VALUES(1,str_to_date('02,02,2023 12,00,00', '%d,%m,%Y %H,%i,%S'),str_to_date('02,02,2023 13,00,00', '%d,%m,%Y %H,%i,%S'),3);
+
+INSERT INTO reservations(room_id, start_time, end_time, user_id)
+VALUES(1,str_to_date('03,02,2023 12,00,00', '%d,%m,%Y %H,%i,%S'),str_to_date('03,02,2023 13,00,00', '%d,%m,%Y %H,%i,%S'),2);
 
 -- End of file.
 
