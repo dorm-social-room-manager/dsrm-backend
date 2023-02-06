@@ -15,4 +15,5 @@ public interface RoomMapper {
     Room roomReqDTOToRoom(RoomRequestDTO roomDto);
     RoomType map(Long id);
     RoomDTO roomToRoomDTO(Room room);
+    Room toRoom(Long id);
 }
