@@ -107,11 +107,10 @@ VALUES (112, 1, 1, 2, 1, (120000), (230000), null, null);
 INSERT INTO rooms (room_number, floor, type_id, max_capacity, key_owner_id, opening_time, closing_time, unavailable_start, unavailable_end)
 VALUES (101, 1, 2, 6, 2, (120000), (230000), null, null);
 
+
 INSERT INTO roles(name) VALUES ('Administrator');
 INSERT INTO roles(name) VALUES ('Uzytkownik');
-
-INSERT INTO roles(id, name)
-VALUES (1,'student');
+INSERT INTO roles(name)VALUES ('Student');
 
 INSERT INTO user_roles(id, role_id,user_id)
 VALUES (1,1,1);

@@ -63,7 +63,7 @@ public class RoleControllerTests extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(roleRequestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/roles/3"));
+                .andExpect(header().string("Location", "http://localhost/roles/4"));
     }
 
 }
