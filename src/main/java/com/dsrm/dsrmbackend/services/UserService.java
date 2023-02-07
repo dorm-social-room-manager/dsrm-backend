@@ -1,6 +1,7 @@
 package com.dsrm.dsrmbackend.services;
 
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,6 @@ public interface UserService {
     Optional<User> getUser(Long userId);
 
     Page<User> getUsers(Pageable pageable);
+
+    public Page<User> getUsers(Pageable pageable, boolean isPending);
 }
