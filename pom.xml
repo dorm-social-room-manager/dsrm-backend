@@ -139,7 +139,7 @@
                 <version>3.1.1</version>
                 <configuration>
                     <from>
-                        <image>openjdk:18-alpine</image>
+                        <image>openjdk:17-alpine</image>
                     </from>
                     <to>
                         <image>dsrm-backend</image>
