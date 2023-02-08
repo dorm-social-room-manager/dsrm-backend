@@ -16,9 +16,9 @@ public interface UserService {
 
     Page<User> getUsers(Pageable pageable);
 
-    public Page<User> getUsers(Pageable pageable, boolean isPending);
+    Page<User> getUsers(Pageable pageable, boolean isPending);
 
     Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, Long id);
 
-     void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user);
+    void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user);
 }

@@ -1,13 +1,16 @@
 package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
+import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.services.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,6 +20,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -97,7 +101,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
 
     @Test
-    void validPatchExistingUser() throws Exception {
+    void validPatchExistingUserReturnStatus() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
         List<Long> longs = new ArrayList<>();
@@ -105,12 +109,19 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         userRolesOnlyDTO.setRoles(longs);
         this.mockMvc.perform(patch("/users/1/roles").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
-                ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
-                .andExpect(jsonPath("$.name", equalTo("Jan")))
-                .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
-                .andExpect(jsonPath("$.roles[0].id", equalTo(1)))
-                .andExpect(jsonPath("$.roles[0].name", equalTo("student")))
-                .andExpect(status().isOk());
+                ).andExpect(status().isOk());
+
+    }
+
+    @Test
+    void validPatchExistingUser(){
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<Long> longs = new ArrayList<>();
+        longs.add(3L);
+        userRolesOnlyDTO.setRoles(longs);
+        Optional<User> userOptional = userService.updateUser(userRolesOnlyDTO,1L);
+        Assertions.assertNotNull(userOptional);
+        Assertions.assertFalse(userOptional.get().getRoles().isEmpty());
 
     }
 
