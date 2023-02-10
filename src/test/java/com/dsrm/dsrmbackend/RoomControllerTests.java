@@ -1,6 +1,7 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,20 +123,24 @@ public class RoomControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void tryToAddInvalidRoom() throws Exception {
-        LocalTime time = LocalTime.parse("12:00:00");
         RoomRequestDTO room = new RoomRequestDTO();
-        room.setName("Pokoj mieszkalny");
-        room.setNumber(203);
+        room.setName("");
+        room.setNumber(null);
         room.setFloor(null);
-        room.setType(2L);
-        room.setMaxCapacity(3);
-        room.setOpeningTime(time);
-        room.setClosingTime(time);
+        room.setType(null);
+        room.setMaxCapacity(null);
+        room.setOpeningTime(null);
+        room.setClosingTime(null);
 
         this.mockMvc.perform(post("/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(room)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("floor must not be null"));
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("name must not be blank",
+                        "number must not be null",
+                        "maxCapacity must not be null",
+                        "floor must not be null",
+                        "openingTime must not be null",
+                        "closingTime must not be null"))));
     }
 }
