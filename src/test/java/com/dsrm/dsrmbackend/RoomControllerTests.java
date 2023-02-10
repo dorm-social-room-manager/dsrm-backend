@@ -100,4 +100,42 @@ public class RoomControllerTests extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.content[1].unavailableEnd").value(is(nullValue())));
 
     }
+
+    @Test
+    public void tryToAddNamelessRoom() throws Exception {
+        LocalTime time = LocalTime.parse("12:00:00");
+        RoomRequestDTO room = new RoomRequestDTO();
+        room.setName("");
+        room.setNumber(203);
+        room.setFloor(2);
+        room.setType(2L);
+        room.setMaxCapacity(3);
+        room.setOpeningTime(time);
+        room.setClosingTime(time);
+
+        this.mockMvc.perform(post("/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(room)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("name must not be blank"));
+    }
+
+    @Test
+    public void tryToAddInvalidRoom() throws Exception {
+        LocalTime time = LocalTime.parse("12:00:00");
+        RoomRequestDTO room = new RoomRequestDTO();
+        room.setName("Pokoj mieszkalny");
+        room.setNumber(203);
+        room.setFloor(null);
+        room.setType(2L);
+        room.setMaxCapacity(3);
+        room.setOpeningTime(time);
+        room.setClosingTime(time);
+
+        this.mockMvc.perform(post("/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(room)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("floor must not be null"));
+    }
 }
