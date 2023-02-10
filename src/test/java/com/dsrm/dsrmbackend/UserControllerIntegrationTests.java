@@ -1,11 +1,15 @@
 package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
+import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
+import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +44,9 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private UserService userService;
@@ -119,10 +128,10 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         List<Long> longs = new ArrayList<>();
         longs.add(3L);
         userRolesOnlyDTO.setRoles(longs);
-        Optional<User> userOptional = userService.updateUser(userRolesOnlyDTO,1L);
-        Assertions.assertNotNull(userOptional);
-        Assertions.assertFalse(userOptional.get().getRoles().isEmpty());
-
+        Optional<User> result = userService.updateUser(userRolesOnlyDTO,1L);
+        Optional<User> optionalUser = userRepo.findById(1L);
+        assertThat(result.isPresent());
+        assertThat(result.get().getRoles().equals(optionalUser.get().getRoles()));
     }
 
     @Test
