@@ -1,4 +1,4 @@
-package com.dsrm.dsrmbackend.cors.config;
+package com.dsrm.dsrmbackend.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
