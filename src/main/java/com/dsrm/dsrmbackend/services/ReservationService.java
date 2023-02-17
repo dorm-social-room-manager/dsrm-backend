@@ -3,6 +3,7 @@ package com.dsrm.dsrmbackend.services;
 
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
 import com.dsrm.dsrmbackend.entities.Reservation;
+import com.dsrm.dsrmbackend.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,4 +16,6 @@ public interface ReservationService {
     Optional<Reservation> getReservation(Long id);
 
     Page<Reservation> getReservations (Pageable pageable);
+
+    Page<Reservation> getReservations(Pageable pageable, Long userId);
 }
