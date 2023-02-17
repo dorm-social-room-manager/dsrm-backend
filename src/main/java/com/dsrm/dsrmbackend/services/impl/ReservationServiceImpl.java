@@ -38,11 +38,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Page<Reservation> getReservations(Pageable pageable, Long userId ){
         Specification<Reservation> reservationSpecification = Specification.where(null);
-        Optional<User> user = userRepo.findById(userId);
-        if (user.isPresent()) {
-            reservationSpecification = reservationSpecification.and(
-                    (Specification<Reservation>) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"),user.get())
-            );
+
+        if (userId !=null) {
+            Optional<User> user = userRepo.findById(userId);
+            if (user.isPresent())
+                reservationSpecification = reservationSpecification.and(
+                        (Specification<Reservation>) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"),user.get())
+                );
         }
         return reservationRepo.findAll(reservationSpecification, pageable);
     }
