@@ -5,6 +5,7 @@ import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.UserService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -110,7 +111,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
 
     @Test
-    void validPatchExistingUserReturnStatus() throws Exception {
+    void validPatchExistingUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
         List<Long> longs = new ArrayList<>();
@@ -119,19 +120,9 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         this.mockMvc.perform(patch("/users/1/roles").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
                 ).andExpect(status().isOk());
-
-    }
-
-    @Test
-    void validPatchExistingUser(){
-        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
-        List<Long> longs = new ArrayList<>();
-        longs.add(3L);
-        userRolesOnlyDTO.setRoles(longs);
-        Optional<User> result = userService.updateUser(userRolesOnlyDTO,1L);
         Optional<User> optionalUser = userRepo.findById(1L);
-        assertThat(result.isPresent());
-        assertThat(result.get().getRoles().equals(optionalUser.get().getRoles()));
+        Assertions.assertNotNull(optionalUser);
+        Assertions.assertEquals("Administrator", optionalUser.get().getRoles().stream().toList().get(0).getName());
     }
 
     @Test
