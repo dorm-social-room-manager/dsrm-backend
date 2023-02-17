@@ -25,7 +25,9 @@ abstract class AbstractIntegrationTest{
                     "spring.datasource.username=" + container.getUsername(),
                     "spring.datasource.password=" + container.getPassword(),
                     "spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true",
-                    "spring.jpa.hibernate.ddl-auto=update"
+                    "spring.jpa.hibernate.ddl-auto=update",
+                    "dsrm.auth.jwtExpirationMs=3600000",
+                    "dsrm.auth.jwtRefreshExpirationMs=86400000"
             ).applyTo(applicationContext.getEnvironment());
         }
     }
