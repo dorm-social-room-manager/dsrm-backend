@@ -49,8 +49,6 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     @Autowired
     private UserRepo userRepo;
 
-    @Autowired
-    private UserService userService;
 
     @Test
     void retrieveNonExistingUser() throws Exception {
@@ -121,7 +119,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
                 ).andExpect(status().isOk());
         Optional<User> optionalUser = userRepo.findById(1L);
-        Assertions.assertNotNull(optionalUser);
+        Assertions.assertTrue(optionalUser.isPresent());
         Assertions.assertEquals("Administrator", optionalUser.get().getRoles().stream().toList().get(0).getName());
     }
 
