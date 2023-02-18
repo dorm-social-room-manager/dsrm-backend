@@ -5,6 +5,7 @@ import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.UserService;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -136,4 +137,24 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 ).andExpect(forwardedUrl(null))
                  .andExpect(status().isNotFound());
     }
+
+    @Test
+    void tryToAddInvalidUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRequestDTO userRequestDTO  = new UserRequestDTO();
+        userRequestDTO.setName("");
+        userRequestDTO.setEmail("");
+        userRequestDTO.setSurname("");
+        userRequestDTO.setPassword("");
+        userRequestDTO.setRoles(null);
+        this.mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("email must not be blank",
+                        "password must not be blank",
+                        "name must not be blank",
+                        "surname must not be blank"))));
+    }
+
 }

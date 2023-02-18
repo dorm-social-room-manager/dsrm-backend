@@ -1,7 +1,8 @@
 package com.dsrm.dsrmbackend;
 
 
-import com.dsrm.dsrmbackend.mappers.ReservationMapper;
+import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,4 +97,23 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
                 .andExpect(jsonPath("$.content[0].endTime", equalTo("2023-02-03 13:00:00")))
                 .andExpect(jsonPath("$.content[0].user.name", equalTo("Piotr")));
     }
+
+    @Test
+    void tryToAddInvalidReservation() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReservationRequestDTO reservationRequestDTO  = new ReservationRequestDTO();
+        reservationRequestDTO.setUser(null);
+        reservationRequestDTO.setRoom(null);
+        reservationRequestDTO.setOpeningTime(null);
+        reservationRequestDTO.setClosingTime(null);
+        this.mockMvc.perform(post("/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user must not be null",
+                        "room must not be null",
+                        "openingTime must not be null",
+                        "closingTime must not be null"))));
+    }
+
 }

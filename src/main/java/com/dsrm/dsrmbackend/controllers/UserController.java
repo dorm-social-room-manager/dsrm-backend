@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/users", consumes= MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> addUser(@RequestBody UserRequestDTO userRequestDTO) {
+    ResponseEntity<Void> addUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         User user = userService.addUser(userRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

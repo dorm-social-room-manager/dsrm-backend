@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class ReservationController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/reservations", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addReservation(@RequestBody ReservationRequestDTO reservationRequestDTO) {
+    public ResponseEntity<Void> addReservation(@Valid  @RequestBody ReservationRequestDTO reservationRequestDTO) {
         Reservation reservation = reservationService.addReservation(reservationRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
