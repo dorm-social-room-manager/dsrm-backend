@@ -2,6 +2,7 @@ package com.dsrm.dsrmbackend.controllers;
 
 import com.dsrm.dsrmbackend.dto.UserDTO;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.services.UserService;
@@ -28,7 +29,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/users", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addUser(@RequestBody UserRequestDTO userRequestDTO) {
+    ResponseEntity<Void> addUser(@RequestBody UserRequestDTO userRequestDTO) {
         User user = userService.addUser(userRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -46,8 +47,19 @@ public class UserController {
 
     @GetMapping(value = "/users")
     @PageableAsQueryParam
-    public ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false,defaultValue = "false") boolean isPending) {
+    ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false,defaultValue = "false") boolean isPending) {
         Page<User> userPage = userService.getUsers(pageable,isPending);
         return new ResponseEntity<>(userPage.map(userMapper::toUserDTO),HttpStatus.OK);
     }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = "/users/{id}/roles")
+    ResponseEntity<Void> partialUpdateUser(@PathVariable Long id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
+        Optional<User> user =  userService.updateUser(userRolesOnlyDTO,id);
+        if(user.isPresent())
+            return ResponseEntity.ok().build();
+        return ResponseEntity.notFound().build();
+    }
+
 }

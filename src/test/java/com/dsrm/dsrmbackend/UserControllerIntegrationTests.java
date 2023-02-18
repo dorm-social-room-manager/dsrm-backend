@@ -1,7 +1,16 @@
 package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
+import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
+import com.dsrm.dsrmbackend.entities.Role;
+import com.dsrm.dsrmbackend.entities.User;
+import com.dsrm.dsrmbackend.repositories.UserRepo;
+import com.dsrm.dsrmbackend.services.UserService;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import static org.hamcrest.Matchers.equalTo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,6 +45,10 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private UserRepo userRepo;
+
 
     @Test
     void retrieveNonExistingUser() throws Exception {
@@ -87,4 +107,33 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
     }
 
+
+    @Test
+    void validPatchExistingUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<Long> longs = new ArrayList<>();
+        longs.add(1L);
+        userRolesOnlyDTO.setRoles(longs);
+        this.mockMvc.perform(patch("/users/1/roles").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
+                ).andExpect(status().isOk());
+        Optional<User> optionalUser = userRepo.findById(1L);
+        Assertions.assertTrue(optionalUser.isPresent());
+        Assertions.assertEquals("Administrator", optionalUser.get().getRoles().stream().toList().get(0).getName());
+    }
+
+    @Test
+    void patchNonExistingUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<Long> longs = new ArrayList<>();
+        longs.add(1L);
+        userRolesOnlyDTO.setRoles(longs);
+        this.mockMvc.perform(patch("/users/100/roles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
+                ).andExpect(forwardedUrl(null))
+                 .andExpect(status().isNotFound());
+    }
 }
