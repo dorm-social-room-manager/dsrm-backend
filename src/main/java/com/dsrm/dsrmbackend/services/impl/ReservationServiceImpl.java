@@ -8,9 +8,10 @@ import com.dsrm.dsrmbackend.services.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,4 +32,14 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Page<Reservation> getReservations(Pageable pageable) {return reservationRepo.findAll(pageable);}
+
+    @Override
+    public Page<Reservation> getReservations(Pageable pageable, Long userId ){
+        Specification<Reservation> reservationSpecification = Specification.where(null);
+        if (userId !=null) {
+            reservationSpecification = reservationSpecification.and(
+                    (Specification<Reservation>) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user").get("id"), userId));
+        }
+        return reservationRepo.findAll(reservationSpecification, pageable);
+    }
 }
