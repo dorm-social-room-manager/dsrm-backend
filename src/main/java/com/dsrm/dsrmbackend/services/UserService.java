@@ -20,5 +20,4 @@ public interface UserService {
 
     Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, Long id);
 
-    void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user);
 }

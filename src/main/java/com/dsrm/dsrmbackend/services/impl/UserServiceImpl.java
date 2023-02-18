@@ -51,9 +51,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Transactional
-    @Override
-    public void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user) {
+    private void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user) {
         if (userRolesOnlyDTO == null || userRolesOnlyDTO.getRoles() == null)
             return;
         Set<Role> userRoles = userRolesOnlyDTO.getRoles().stream().map(roleRepo::getReferenceById).collect(Collectors.toSet());
