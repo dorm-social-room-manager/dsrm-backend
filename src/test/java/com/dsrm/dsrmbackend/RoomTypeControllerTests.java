@@ -65,5 +65,14 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
                         .andExpect(jsonPath("$.content[0].name").value("Pokoj mieszkalny"))
                         .andExpect(jsonPath("$.content[1].name").value("Sala telewizyjna"));
     }
-
+    @Test
+    public void tryToAddNamelessRoomType() throws Exception {
+        RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
+        roomTypeRequestDTO.setName("");
+        this.mockMvc.perform(post("/room-types")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("name must not be blank"));
+    }
 }
