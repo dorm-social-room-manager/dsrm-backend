@@ -16,5 +16,5 @@ public interface UserService {
 
     Page<User> getUsers(Pageable pageable);
 
-    public Page<User> getUsers(Pageable pageable, boolean isPending);
+    Page<User> getUsers(Pageable pageable, boolean isPending);
 }

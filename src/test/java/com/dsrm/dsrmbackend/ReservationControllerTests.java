@@ -85,4 +85,15 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
                 .andExpect(jsonPath("$.content[1].endTime", equalTo("2023-02-03 13:00:00")))
                 .andExpect(jsonPath("$.content[1].user.name", equalTo("Piotr")));
     }
+
+    @Test
+    void retrieveReservationsForSpecificUser() throws Exception {
+        this.mockMvc.perform(get("/reservations?userId=2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].room.roomNumber", equalTo(111)))
+                .andExpect(jsonPath("$.content[0].startTime", equalTo("2023-02-03 12:00:00")))
+                .andExpect(jsonPath("$.content[0].endTime", equalTo("2023-02-03 13:00:00")))
+                .andExpect(jsonPath("$.content[0].user.name", equalTo("Piotr")));
+    }
 }
