@@ -12,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalTime;
@@ -37,6 +38,7 @@ public class RoomControllerTests extends AbstractIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
+    @Transactional
     public void insertValidRoom() throws Exception {
         LocalTime time = LocalTime.parse("12:00:00");
         RoomRequestDTO room = new RoomRequestDTO();
