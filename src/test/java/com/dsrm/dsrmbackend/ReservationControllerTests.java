@@ -13,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +59,7 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
     }
 
     @Test
+    @Transactional
     void addValidReservation() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object> body = new HashMap<>();

@@ -12,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -56,6 +57,7 @@ public class RoleControllerTests extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void addRole() throws Exception {
         RoleRequestDTO roleRequestDTO = new RoleRequestDTO();
         roleRequestDTO.setName("Moderator");

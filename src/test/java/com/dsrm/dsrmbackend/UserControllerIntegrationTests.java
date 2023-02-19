@@ -20,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,6 +70,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     }
 
     @Test
+    @Transactional
     void addValidUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRequestDTO userRequestDTO  = new UserRequestDTO();
@@ -110,6 +112,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
 
 
     @Test
+    @Transactional
     void validPatchExistingUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();

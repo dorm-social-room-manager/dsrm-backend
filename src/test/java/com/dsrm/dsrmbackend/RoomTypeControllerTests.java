@@ -11,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,6 +33,7 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
+    @Transactional
     public void addRoomType() throws Exception {
         RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
         roomTypeRequestDTO.setName("Ping-Pong");
