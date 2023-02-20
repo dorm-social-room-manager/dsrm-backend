@@ -2,17 +2,12 @@ package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.jayway.jsonpath.JsonPath;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
-import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
-import com.dsrm.dsrmbackend.services.UserService;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,9 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -86,13 +80,16 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 .content(objectMapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().isCreated())
                 .andReturn();
-        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
-        this.mockMvc.perform(get(location)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Jan"))
-                .andExpect(jsonPath("$.surname").value("Chraboszcz"))
-                .andExpect(jsonPath("$.email").value("Jan@gmail.com"));
+        String userId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        userId = userId.substring(userId.length()-36);
+        Optional<User> resUser = userRepo.findById(userId);
+        assertTrue(resUser.isPresent());
+        User user = resUser.get();
+        assertEquals("Jan", user.getName());
+        assertEquals("Jan@gmail.com", user.getEmail());
+        assertEquals("Chraboszcz", user.getSurname());
+        assertEquals("Marciniak", user.getPassword());
+        assertNull(user.getRoles());
     }
 
     @Test
@@ -134,7 +131,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
                 ).andExpect(status().isOk());
         Optional<User> optionalUser = userRepo.findById(String.valueOf(1L));
-        Assertions.assertTrue(optionalUser.isPresent());
+        assertTrue(optionalUser.isPresent());
         Assertions.assertEquals("Administrator", optionalUser.get().getRoles().stream().toList().get(0).getName());
     }
 

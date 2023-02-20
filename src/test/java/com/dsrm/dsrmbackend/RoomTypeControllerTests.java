@@ -1,6 +1,8 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
+import com.dsrm.dsrmbackend.entities.RoomType;
+import com.dsrm.dsrmbackend.repositories.RoomTypeRepo;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +40,9 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    RoomTypeRepo roomTypeRepo;
+
     @Test
     @Transactional
     public void addRoomType() throws Exception {
@@ -44,11 +53,12 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
                 .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
                 .andExpect(status().isCreated())
                 .andReturn();
-        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
-        this.mockMvc.perform(get(location)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Ping-Pong"));
+        String roomTypeId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        roomTypeId = roomTypeId.substring(roomTypeId.length()-36);
+        Optional<RoomType> resRoomType = roomTypeRepo.findById(roomTypeId);
+        assertTrue(resRoomType.isPresent());
+        RoomType roomType = resRoomType.get();
+        assertEquals("Ping-Pong", roomType.getName());
     }
 
     @Test

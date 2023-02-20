@@ -1,6 +1,8 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
+import com.dsrm.dsrmbackend.entities.Role;
+import com.dsrm.dsrmbackend.repositories.RoleRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,6 +39,9 @@ public class RoleControllerTests extends AbstractIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    RoleRepo roleRepo;
 
     @Test
     public void getExistentRole() throws Exception {
@@ -68,11 +77,12 @@ public class RoleControllerTests extends AbstractIntegrationTest {
                         .content(objectMapper.writeValueAsString(roleRequestDTO)))
                 .andExpect(status().isCreated())
                 .andReturn();
-        String location = JsonPath.read(result.getResponse().getHeader("Location"), "$");
-        this.mockMvc.perform(get(location)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Moderator"));
+        String roleId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        roleId = roleId.substring(roleId.length()-36);
+        Optional<Role> resRole = roleRepo.findById(roleId);
+        assertTrue(resRole.isPresent());
+        Role role = resRole.get();
+        assertEquals("Moderator", role.getName());
     }
 
 }
