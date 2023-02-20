@@ -19,5 +19,5 @@ public class UserRequestDTO {
     private String name;
     @NotBlank
     private String surname;
-    private List<Long> roles;
+    private List<String> roles;
 }

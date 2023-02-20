@@ -17,7 +17,7 @@ public class RoomRequestDTO {
     private Integer number;
     @NotNull
     private Integer floor;
-    private Long type;
+    private String type;
     @NotNull
     private Integer maxCapacity;
     @NotNull

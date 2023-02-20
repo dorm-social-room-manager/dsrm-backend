@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ReservationRequestDTO {
     @NotNull
-    private Long room;
+    private String room;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @NotNull
     private LocalDateTime openingTime;
@@ -20,5 +20,5 @@ public class ReservationRequestDTO {
     @NotNull
     private LocalDateTime closingTime;
     @NotNull
-    private Long user;
+    private String user;
 }
