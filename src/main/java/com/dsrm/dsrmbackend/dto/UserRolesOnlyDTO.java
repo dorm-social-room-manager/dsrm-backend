@@ -11,5 +11,5 @@ import java.util.List;
 @Getter
 @Setter
 public class UserRolesOnlyDTO {
-    private List<Long> roles;
+    private List<String> roles;
 }

@@ -2,6 +2,9 @@ package com.dsrm.dsrmbackend;
 
 
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
+import com.dsrm.dsrmbackend.entities.Reservation;
+import com.dsrm.dsrmbackend.repositories.ReservationRepo;
+import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,15 +16,19 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,7 +45,7 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext context;
+    private ReservationRepo reservationRepo;
 
     @Test
     void retrieveNonExistingReservation() throws Exception {
@@ -67,11 +74,20 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
         body.put("openingTime","2023-02-21 12:20:00");
         body.put("closingTime","2023-02-22 13:20:00");
         body.put("user",2);
-        this.mockMvc.perform(post("/reservations")
+        MvcResult result = this.mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString((body))))
                         .andExpect(status().isCreated())
-                        .andExpect(header().string("Location", "http://localhost/reservations/3"));
+                .andReturn();
+        String reservationId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        reservationId = reservationId.substring(reservationId.length()-36);
+        Optional<Reservation> resReservation = reservationRepo.findById(reservationId);
+        assertTrue(resReservation.isPresent());
+        Reservation reservation = resReservation.get();
+        assertEquals("1", reservation.getRoom().getId());
+        assertEquals("2", reservation.getUser().getId());
+        assertEquals(LocalDateTime.parse("2023-02-21T12:20:00"), reservation.getStartTime());
+        assertEquals(LocalDateTime.parse("2023-02-22T13:20:00"), reservation.getEndTime());
     }
 
     @Test

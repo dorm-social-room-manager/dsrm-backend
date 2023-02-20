@@ -41,14 +41,14 @@ public class ReservationController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/reservations/{id}")
-    ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id){
+    ResponseEntity<ReservationDTO> getReservation(@PathVariable String id){
         Optional<Reservation> reservation = reservationService.getReservation(id);
         return  ResponseEntity.of((reservation.map(reservationMapper::toReservationDTO)));
     }
 
     @GetMapping(value = "/reservations")
     @PageableAsQueryParam
-    public ResponseEntity<Page<ReservationDTO>> readReservations(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false) Long userId) {
+    public ResponseEntity<Page<ReservationDTO>> readReservations(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false) String userId) {
         Page<Reservation> reservations = reservationService.getReservations(pageable,userId);
         return new ResponseEntity<>(reservations.map(reservationMapper::toReservationDTO),HttpStatus.OK);
     }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -24,17 +25,18 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation addReservation(ReservationRequestDTO reservationRequestDTO) {
         Reservation reservation = reservationMapper.toReservation(reservationRequestDTO);
+        reservation.setId(UUID.randomUUID().toString());
         return reservationRepo.save(reservation);
     }
 
     @Override
-    public Optional<Reservation> getReservation(Long id) {return reservationRepo.findById(id);}
+    public Optional<Reservation> getReservation(String id) {return reservationRepo.findById(id);}
 
     @Override
     public Page<Reservation> getReservations(Pageable pageable) {return reservationRepo.findAll(pageable);}
 
     @Override
-    public Page<Reservation> getReservations(Pageable pageable, Long userId ){
+    public Page<Reservation> getReservations(Pageable pageable, String userId ){
         Specification<Reservation> reservationSpecification = Specification.where(null);
         if (userId !=null) {
             reservationSpecification = reservationSpecification.and(

@@ -12,11 +12,11 @@ public interface UserService {
 
     User addUser(UserRequestDTO userRequestDTO);
 
-    Optional<User> getUser(Long userId);
+    Optional<User> getUser(String userId);
 
     Page<User> getUsers(Pageable pageable);
 
     Page<User> getUsers(Pageable pageable, boolean isPending);
 
-    Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, Long id);
+    Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, String id);
 }

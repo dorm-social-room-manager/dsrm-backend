@@ -1,6 +1,9 @@
 package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
+import com.dsrm.dsrmbackend.entities.Room;
+import com.dsrm.dsrmbackend.repositories.RoomRepo;
+import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,14 +15,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalTime;
+import java.util.Optional;
 
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,24 +44,38 @@ public class RoomControllerTests extends AbstractIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    RoomRepo roomRepo;
+
     @Test
     @Transactional
     public void insertValidRoom() throws Exception {
         LocalTime time = LocalTime.parse("12:00:00");
-        RoomRequestDTO room = new RoomRequestDTO();
-        room.setName("test");
-        room.setNumber(203);
-        room.setFloor(2);
-        room.setType(2L);
-        room.setMaxCapacity(3);
-        room.setOpeningTime(time);
-        room.setClosingTime(time);
+        RoomRequestDTO roomRequest = new RoomRequestDTO();
+        roomRequest.setName("test");
+        roomRequest.setNumber(203);
+        roomRequest.setFloor(2);
+        roomRequest.setType(String.valueOf(2L));
+        roomRequest.setMaxCapacity(3);
+        roomRequest.setOpeningTime(time);
+        roomRequest.setClosingTime(time);
 
-        this.mockMvc.perform(post("/rooms")
+        MvcResult result = this.mockMvc.perform(post("/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(room)))
+                        .content(objectMapper.writeValueAsString(roomRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/rooms/4"));
+                .andReturn();
+        String roomId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        roomId = roomId.substring(roomId.length()-36);
+        Optional<Room> resRoom = roomRepo.findById(roomId);
+        assertTrue(resRoom.isPresent());
+        Room room = resRoom.get();
+        assertEquals(203, room.getRoomNumber());
+        assertEquals(2, room.getFloor());
+        assertEquals("2", room.getRoomType().getId());
+        assertEquals(3, room.getMaxCapacity());
+        assertEquals(time, room.getOpeningTime());
+        assertEquals(time, room.getClosingTime());
     }
 
     @Test
@@ -82,8 +103,10 @@ public class RoomControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void getRoomsInRange() throws Exception {
-        this.mockMvc.perform(get("/rooms?page=0%size=2")
-                        .contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("page", "0")
+                        .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].roomNumber").value(111))
                 .andExpect(jsonPath("$.content[0].floor").value(1))
@@ -111,7 +134,7 @@ public class RoomControllerTests extends AbstractIntegrationTest {
         room.setName("");
         room.setNumber(203);
         room.setFloor(2);
-        room.setType(2L);
+        room.setType(String.valueOf(2L));
         room.setMaxCapacity(3);
         room.setOpeningTime(time);
         room.setClosingTime(time);
