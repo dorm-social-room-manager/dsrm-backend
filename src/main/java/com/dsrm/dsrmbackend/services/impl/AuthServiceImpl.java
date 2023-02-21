@@ -47,7 +47,6 @@ public class AuthServiceImpl implements AuthService {
         return Jwts.builder().setSubject(user.getEmail()).setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtRefreshExpirationMs))
                 .setClaims(Map.of("username", user.getEmail()))
-                .addClaims(Map.of("roles", user.getRoles()))
                 .signWith(this.getSigningKey())
                 .compact();
     }
