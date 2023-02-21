@@ -38,11 +38,4 @@ public class AuthController {
         }
         throw new CredentialException("User does not exist");
     }
-
-    @ExceptionHandler(CredentialException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleCredentialException(CredentialException ex) {
-        return ex.getMessage();
-    }
-
 }
