@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginDetailsRequestDTO userDetails) throws CredentialException {
         if (userDetails.getUsername().equals("user")) {
             if (userDetails.getPassword().equals("user")) {
