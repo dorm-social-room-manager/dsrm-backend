@@ -19,23 +19,7 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginDetailsRequestDTO userDetails) throws CredentialException {
-        if (userDetails.getUsername().equals("user")) {
-            if (userDetails.getPassword().equals("user")) {
-                String accessToken = authService.generateAccessToken(userDetails.getUsername());
-                String refreshToken = authService.generateRefreshToken(userDetails.getUsername());
-                return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
-            }
-            throw new CredentialException("Bad password");
-        }
-        else if (userDetails.getUsername().equals("admin")) {
-            if (userDetails.getPassword().equals("admin")) {
-                String accessToken = authService.generateAccessToken(userDetails.getUsername());
-                String refreshToken = authService.generateRefreshToken(userDetails.getUsername());
-                return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
-            }
-            throw new CredentialException("Bad password");
-        }
-        throw new CredentialException("User does not exist");
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginDetailsRequestDTO loginDetails) throws CredentialException {
+        return ResponseEntity.ok(authService.authenticateUser(loginDetails));
     }
 }
