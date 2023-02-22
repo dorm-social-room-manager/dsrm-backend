@@ -7,7 +7,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepo extends JpaRepository<User,String>{
     Page<User> findAll(Specification<User> userSpecification, Pageable pageable);
+    Optional<User> findByEmail(String email);
 }

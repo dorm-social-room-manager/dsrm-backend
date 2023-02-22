@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.security.auth.login.CredentialException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,5 +26,12 @@ public class RestResponseEntityExceptionHandler {
         return errors;
     }
 
+    @ExceptionHandler(CredentialException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<String> handleCredentialException(CredentialException ex) {
+        List<String> errors = new ArrayList<>();
+        errors.add(ex.getMessage());
+        return errors;
+    }
 
 }

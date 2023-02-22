@@ -1,0 +1,4 @@
+dsrm:
+  auth:
+    jwtExpirationMs: 3600000
+    jwtRefreshExpirationMs: 86400000
