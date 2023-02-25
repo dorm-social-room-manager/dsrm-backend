@@ -18,5 +18,6 @@ public class UserDTO {
     private String surname;
     private List<Role> roles;
     private boolean isBanned;
+    private Integer roomNumber;
     private LocalDateTime banEndDate;
 }

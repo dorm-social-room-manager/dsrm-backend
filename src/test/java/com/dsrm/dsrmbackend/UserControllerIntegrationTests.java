@@ -62,6 +62,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
         .andExpect(jsonPath("$.name", equalTo("Jan")))
         .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
+        .andExpect(jsonPath("$.roomNumber", equalTo(111)))
         .andExpect(status().isOk());
     }
 
