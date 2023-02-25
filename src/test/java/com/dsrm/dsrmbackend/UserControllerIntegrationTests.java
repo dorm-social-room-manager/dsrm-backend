@@ -74,6 +74,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         userRequestDTO.setEmail("Jan@gmail.com");
         userRequestDTO.setSurname("Chraboszcz");
         userRequestDTO.setPassword("Marciniak");
+        userRequestDTO.setRoomNumber(111);
         userRequestDTO.setRoles(null);
         MvcResult result = this.mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,6 +90,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         assertEquals("Jan@gmail.com", user.getEmail());
         assertEquals("Chraboszcz", user.getSurname());
         assertEquals("Marciniak", user.getPassword());
+        assertEquals(111, user.getRoomNumber());
         assertNull(user.getRoles());
     }
 
@@ -156,6 +158,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         userRequestDTO.setName("");
         userRequestDTO.setEmail("");
         userRequestDTO.setSurname("");
+        userRequestDTO.setRoomNumber(null);
         userRequestDTO.setPassword("");
         userRequestDTO.setRoles(null);
         this.mockMvc.perform(post("/users")
@@ -165,7 +168,8 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                 .andExpect((jsonPath("$", Matchers.containsInAnyOrder("email must not be blank",
                         "password must not be blank",
                         "name must not be blank",
-                        "surname must not be blank"))));
+                        "surname must not be blank",
+                        "roomNumber must not be null"))));
     }
 
 }
