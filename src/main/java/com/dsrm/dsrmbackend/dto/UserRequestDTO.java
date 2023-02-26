@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,5 +20,7 @@ public class UserRequestDTO {
     private String name;
     @NotBlank
     private String surname;
+    @NotNull
+    private Integer roomNumber;
     private List<String> roles;
 }

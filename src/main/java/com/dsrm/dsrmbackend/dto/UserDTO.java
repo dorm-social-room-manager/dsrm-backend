@@ -13,10 +13,12 @@ import java.util.List;
 @Getter
 @Setter
 public class UserDTO {
+    private String id;
     private String email;
     private String name;
     private String surname;
     private List<Role> roles;
     private boolean isBanned;
+    private Integer roomNumber;
     private LocalDateTime banEndDate;
 }
