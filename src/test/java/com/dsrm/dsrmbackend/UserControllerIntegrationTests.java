@@ -63,7 +63,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         .andExpect(jsonPath("$.name", equalTo("Jan")))
         .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
         .andExpect(jsonPath("$.roomNumber", equalTo(111)))
-        .andExpect(jsonPath("$.id", equalTo(1)))
+        .andExpect(jsonPath("$.id", equalTo("1")))
         .andExpect(status().isOk());
     }
 
