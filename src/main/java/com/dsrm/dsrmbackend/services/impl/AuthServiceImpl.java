@@ -22,10 +22,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Value("${dsrm.auth.jwtExpirationMs}")
+    @Value("${jwt.ExpirationMs}")
     private int jwtExpirationMs;
 
-    @Value("${dsrm.auth.jwtRefreshExpirationMs}")
+    @Value("${jwt.RefreshExpirationMs}")
     private int jwtRefreshExpirationMs;
 
     private final UserRepo userRepo;
