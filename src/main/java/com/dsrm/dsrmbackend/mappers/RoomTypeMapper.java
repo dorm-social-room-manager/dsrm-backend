@@ -12,4 +12,6 @@ public interface RoomTypeMapper {
     RoomType roomTypeReqDTOToRoomType(RoomTypeRequestDTO roomTypeReqDto);
 
     RoomTypeDTO roomTypeToRoomTypeDTO(RoomType roomType);
+
+    RoomType mapIdToRoomType(String id);
 }
