@@ -41,15 +41,25 @@ public class RoomServiceImpl implements RoomService {
         Room newRoom;
         if (room.isPresent()) {
             newRoom = room.get();
-            newRoom.setRoomNumber(update.getNumber());
-            newRoom.setFloor(update.getFloor());
+            if (update.getNumber() != null) {
+                newRoom.setRoomNumber(update.getNumber());
+            }
+            if (update.getFloor() != null) {
+                newRoom.setFloor(update.getFloor());
+            }
             Optional<RoomType> roomType = roomTypeRepo.findById(update.getType());
             if (newRoom.getRoomType() != null && roomType.isPresent()) {
                 newRoom.setRoomType(roomType.get());
             }
-            newRoom.setMaxCapacity(update.getMaxCapacity());
-            newRoom.setOpeningTime(update.getOpeningTime());
-            newRoom.setClosingTime(update.getClosingTime());
+            if (update.getMaxCapacity() != null) {
+                newRoom.setMaxCapacity(update.getMaxCapacity());
+            }
+            if (update.getOpeningTime() != null) {
+                newRoom.setOpeningTime(update.getOpeningTime());
+            }
+            if (update.getClosingTime() != null) {
+                newRoom.setClosingTime(update.getClosingTime());
+            }
         }
         else {
             newRoom = roomMapper.roomReqDTOToRoom(update);
