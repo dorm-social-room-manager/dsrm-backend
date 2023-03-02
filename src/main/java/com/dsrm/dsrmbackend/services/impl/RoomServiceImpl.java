@@ -24,6 +24,11 @@ public class RoomServiceImpl implements RoomService {
     public Room addRoom(RoomRequestDTO roomDto) {
         Room room = roomMapper.roomReqDTOToRoom(roomDto);
         room.setId(UUID.randomUUID().toString());
+        room.setRoomType(null);
+        if (roomDto.getType() != null) {
+            RoomType roomType = roomTypeRepo.getReferenceById(roomDto.getType());
+            room.setRoomType(roomType);
+        }
         return roomRepo.save(room);
     }
 
