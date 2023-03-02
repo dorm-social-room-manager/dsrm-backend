@@ -27,8 +27,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -167,5 +166,65 @@ public class RoomControllerTests extends AbstractIntegrationTest {
                         "floor must not be null",
                         "openingTime must not be null",
                         "closingTime must not be null"))));
+    }
+
+    @Test
+    @Transactional
+    public void updateValidRoom() throws Exception {
+        RoomRequestDTO updateRoom = new RoomRequestDTO();
+        updateRoom.setName("test");
+        updateRoom.setNumber(202);
+        updateRoom.setFloor(2);
+        updateRoom.setType(String.valueOf(2L));
+        updateRoom.setMaxCapacity(22);
+        updateRoom.setOpeningTime(LocalTime.parse("12:00:00"));
+        updateRoom.setClosingTime(LocalTime.parse("22:00:00"));
+
+        this.mockMvc.perform(put("/rooms/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRoom)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", "http://localhost/rooms/2"));
+
+        Optional<Room> resRoom = roomRepo.findById("2");
+        assertTrue(resRoom.isPresent());
+
+        Room room = resRoom.get();
+        assertEquals(202, room.getRoomNumber());
+        assertEquals(2, room.getFloor());
+        assertEquals("2", room.getRoomType().getId());
+        assertEquals(22, room.getMaxCapacity());
+        assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
+        assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
+    }
+
+    @Test
+    @Transactional
+    public void addRoomThroughUpdate() throws Exception {
+        RoomRequestDTO updateRoom = new RoomRequestDTO();
+        updateRoom.setName("test");
+        updateRoom.setNumber(202);
+        updateRoom.setFloor(2);
+        updateRoom.setType(String.valueOf(2L));
+        updateRoom.setMaxCapacity(22);
+        updateRoom.setOpeningTime(LocalTime.parse("12:00:00"));
+        updateRoom.setClosingTime(LocalTime.parse("22:00:00"));
+
+        this.mockMvc.perform(put("/rooms/66")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRoom)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", "http://localhost/rooms/66"));
+
+        Optional<Room> resRoom = roomRepo.findById("66");
+        assertTrue(resRoom.isPresent());
+
+        Room room = resRoom.get();
+        assertEquals(202, room.getRoomNumber());
+        assertEquals(2, room.getFloor());
+        assertEquals("2", room.getRoomType().getId());
+        assertEquals(22, room.getMaxCapacity());
+        assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
+        assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
     }
 }

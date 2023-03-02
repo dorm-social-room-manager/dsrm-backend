@@ -11,7 +11,6 @@ import org.mapstruct.Mapping;
 public interface RoomMapper {
 
     @Mapping(source = "number", target = "roomNumber")
-    @Mapping(source = "type", target = "roomType")
     Room roomReqDTOToRoom(RoomRequestDTO roomDto);
     RoomType map(Long id);
     RoomDTO roomToRoomDTO(Room room);

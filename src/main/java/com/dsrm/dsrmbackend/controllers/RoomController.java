@@ -53,4 +53,15 @@ public class RoomController {
         return new ResponseEntity<>(roomService.getRooms(pageable).map(roomMapper::roomToRoomDTO),HttpStatus.OK);
 
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(value = "/rooms/{id}")
+    public ResponseEntity<Void> updateRoom(@RequestBody RoomRequestDTO roomRequestDTO, @PathVariable String id) {
+        Room room = roomService.updateRoom(roomRequestDTO, id);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .buildAndExpand(room.getId()).toUri();
+
+        return ResponseEntity.status(HttpStatus.OK).location(location).build();
+    }
 }
