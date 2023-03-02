@@ -27,6 +27,8 @@ spring.datasource.driver-class-name = org.mariadb.jdbc.Driver
 spring.jpa.hibernate.ddl-auto = create-drop
 spring.security.user.name = # username
 spring.security.user.password = # user password
+dsrm.auth.jwt.ExpirationMs = # login token expiration time in miliseconds
+dsrm.auth.jwt.RefreshExpirationMs = # refresh token expiration time in miliseconds
 ```
 
 ### Building application
