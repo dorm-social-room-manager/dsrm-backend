@@ -19,10 +19,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
-@RestController("AdminRoomController")
+@RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class RoomController {
+public class AdminRoomController {
     private final RoomService roomService;
     private final RoomMapper roomMapper;
 

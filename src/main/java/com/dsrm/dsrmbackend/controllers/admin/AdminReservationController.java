@@ -20,10 +20,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
-@RestController("AdminReservationController")
+@RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class ReservationController {
+public class AdminReservationController {
 
     private final ReservationService reservationService;
     private final ReservationMapper reservationMapper;

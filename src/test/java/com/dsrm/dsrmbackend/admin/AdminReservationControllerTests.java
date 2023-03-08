@@ -1,6 +1,7 @@
-package com.dsrm.dsrmbackend;
+package com.dsrm.dsrmbackend.admin;
 
 
+import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
 import com.dsrm.dsrmbackend.entities.Reservation;
 import com.dsrm.dsrmbackend.repositories.ReservationRepo;

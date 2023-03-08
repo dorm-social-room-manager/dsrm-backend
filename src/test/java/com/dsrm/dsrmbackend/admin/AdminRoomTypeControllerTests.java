@@ -1,5 +1,6 @@
-package com.dsrm.dsrmbackend;
+package com.dsrm.dsrmbackend.admin;
 
+import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
 import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.repositories.RoomTypeRepo;

@@ -21,10 +21,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
-@RestController("AdminUserController")
+@RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class UserController {
+public class AdminUserController {
     private final UserService userService;
     private final UserMapper userMapper;
 

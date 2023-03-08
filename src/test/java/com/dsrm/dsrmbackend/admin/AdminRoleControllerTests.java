@@ -1,5 +1,6 @@
-package com.dsrm.dsrmbackend;
+package com.dsrm.dsrmbackend.admin;
 
+import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
 import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.repositories.RoleRepo;

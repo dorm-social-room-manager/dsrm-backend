@@ -20,7 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class RoleController {
+public class AdminRoleController {
     private final RoleService roleService;
     private final RoleMapper roleMapper;
 
