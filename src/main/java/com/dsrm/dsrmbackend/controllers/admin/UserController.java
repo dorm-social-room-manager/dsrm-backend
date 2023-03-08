@@ -1,4 +1,4 @@
-package com.dsrm.dsrmbackend.controllers;
+package com.dsrm.dsrmbackend.controllers.admin;
 
 import com.dsrm.dsrmbackend.dto.UserDTO;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
@@ -17,12 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
-@RestController
+@RestController("AdminUserController")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -44,6 +44,23 @@ public class UserController {
     ResponseEntity<UserDTO> getUser(@PathVariable String id){
         Optional<User> user = userService.getUser(id);
         return  ResponseEntity.of((user.map(userMapper::toUserDTO)));
+    }
+
+    @GetMapping(value = "/users")
+    @PageableAsQueryParam
+    ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false,defaultValue = "false") boolean isPending) {
+        Page<User> userPage = userService.getUsers(pageable,isPending);
+        return new ResponseEntity<>(userPage.map(userMapper::toUserDTO),HttpStatus.OK);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = "/users/{id}/roles")
+    ResponseEntity<Void> partialUpdateUser(@PathVariable String id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
+        Optional<User> user =  userService.updateUser(userRolesOnlyDTO, id);
+        if(user.isPresent())
+            return ResponseEntity.ok().build();
+        return ResponseEntity.notFound().build();
     }
 
 }

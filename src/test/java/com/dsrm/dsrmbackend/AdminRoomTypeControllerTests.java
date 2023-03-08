@@ -3,6 +3,7 @@ package com.dsrm.dsrmbackend;
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
 import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.repositories.RoomTypeRepo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -25,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Testcontainers
 @DirtiesContext
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
-public class RoomTypeControllerTests extends AbstractIntegrationTest {
+public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -44,8 +45,26 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
     RoomTypeRepo roomTypeRepo;
 
     @Test
+    @Transactional
+    public void addRoomType() throws Exception {
+        RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
+        roomTypeRequestDTO.setName("Ping-Pong");
+        MvcResult result = this.mockMvc.perform(post("/admin/room-types")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String roomTypeId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
+        roomTypeId = roomTypeId.substring(roomTypeId.length()-36);
+        Optional<RoomType> resRoomType = roomTypeRepo.findById(roomTypeId);
+        assertTrue(resRoomType.isPresent());
+        RoomType roomType = resRoomType.get();
+        assertEquals("Ping-Pong", roomType.getName());
+    }
+
+    @Test
     public void getExistentRoomType() throws Exception {
-        this.mockMvc.perform(get("/room-types/1")
+        this.mockMvc.perform(get("/admin/room-types/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Pokoj mieszkalny"));
@@ -53,14 +72,14 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void tryToGetNonexistentRoomType() throws Exception {
-        this.mockMvc.perform(get("/room-types/1512")
+        this.mockMvc.perform(get("/admin/room-types/1512")
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
     }
 
     @Test
     public void getRoomTypesInRange() throws Exception {
-                this.mockMvc.perform(get("/room-types")
+                this.mockMvc.perform(get("/admin/room-types")
                         .param("page", "0")
                         .param("size", "2")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -68,5 +87,14 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
                         .andExpect(jsonPath("$.content[0].name").value("Pokoj mieszkalny"))
                         .andExpect(jsonPath("$.content[1].name").value("Sala telewizyjna"));
     }
-
+    @Test
+    public void tryToAddNamelessRoomType() throws Exception {
+        RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();
+        roomTypeRequestDTO.setName("");
+        this.mockMvc.perform(post("/admin/room-types")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("name must not be blank"));
+    }
 }
