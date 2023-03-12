@@ -52,4 +52,9 @@ public class ReservationController {
         Page<Reservation> reservations = reservationService.getReservations(pageable,userId);
         return new ResponseEntity<>(reservations.map(reservationMapper::toReservationDTO),HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "reservations/{id}")
+    ResponseEntity<Void> deleteReservation(@PathVariable String id){
+        return reservationService.deleteReservation(id).map(status -> ResponseEntity.noContent().<Void>build()).orElse(ResponseEntity.notFound().build());
+    }
 }

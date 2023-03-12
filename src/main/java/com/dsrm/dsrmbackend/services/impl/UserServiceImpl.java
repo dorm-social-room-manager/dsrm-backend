@@ -53,6 +53,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public Optional<User> deleteUser(String id) {
+        Optional<User> user = userRepo.findById(id);
+        if (user.isEmpty())
+            return user;
+        userRepo.deleteById(id);
+        return user;
+    }
+
     private void updateUserRoles(UserRolesOnlyDTO userRolesOnlyDTO, User user) {
         if (userRolesOnlyDTO == null || userRolesOnlyDTO.getRoles() == null)
             return;

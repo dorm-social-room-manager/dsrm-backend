@@ -174,4 +174,19 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
                         "roomNumber must not be null"))));
     }
 
+    @Test
+    void deleteInvalidUser() throws Exception {
+        this.mockMvc.perform(delete("/admin/users/100").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
+    @Test
+    @Transactional
+    void deleteValidUser() throws Exception{
+        this.mockMvc.perform(delete("/users/2").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        this.mockMvc.perform(get("/reservations/2").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
 }
