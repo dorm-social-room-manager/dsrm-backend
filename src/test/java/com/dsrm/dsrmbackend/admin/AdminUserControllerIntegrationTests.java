@@ -1,9 +1,11 @@
-package com.dsrm.dsrmbackend;
+package com.dsrm.dsrmbackend.admin;
+
+import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
-import com.jayway.jsonpath.JsonPath;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
+import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
 @AutoConfigureMockMvc
-class UserControllerIntegrationTests extends  AbstractIntegrationTest{
+class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
     @Autowired
     private MockMvc mockMvc;
 
@@ -51,14 +53,14 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     @Test
     void retrieveNonExistingUser() throws Exception {
         this.mockMvc
-                .perform(get("/users/1000").contentType(MediaType.APPLICATION_JSON))
+                .perform(get("/admin/users/1000").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(forwardedUrl(null))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void retrieveExistingUser() throws Exception {
-        this.mockMvc.perform(get("/users/1").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(get("/admin/users/1").contentType(MediaType.APPLICATION_JSON)
         ).andExpect(jsonPath("$.email", equalTo("test01@wp.pl")))
         .andExpect(jsonPath("$.name", equalTo("Jan")))
         .andExpect(jsonPath("$.surname", equalTo("Kowalski")))
@@ -78,7 +80,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         userRequestDTO.setPassword("Marciniak");
         userRequestDTO.setRoomNumber(111);
         userRequestDTO.setRoles(null);
-        MvcResult result = this.mockMvc.perform(post("/users")
+        MvcResult result = this.mockMvc.perform(post("/admin/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().isCreated())
@@ -97,6 +99,63 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
     }
 
     @Test
+    void retrieveUsersInRange() throws Exception {
+        this.mockMvc.perform(get("/admin/users")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("Jan"))
+                .andExpect(jsonPath("$.content[0].surname").value("Kowalski"))
+                .andExpect(jsonPath("$.content[0].email").value("test01@wp.pl"))
+                .andExpect(jsonPath("$.content[1].name").value("Piotr"))
+                .andExpect(jsonPath("$.content[1].surname").value("Nowak"))
+                .andExpect(jsonPath("$.content[1].email").value("test02@wp.pl"));
+    }
+
+    @Test
+    void retrieveUsersWithoutRoles() throws Exception {
+        this.mockMvc.perform(get("/admin/users?isPending=true")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("Stefan"))
+                .andExpect(jsonPath("$.content[0].surname").value("Grabowski"))
+                .andExpect(jsonPath("$.content[0].email").value("test03@wp.pl"));
+
+    }
+
+
+    @Test
+    @Transactional
+    void validPatchExistingUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<String> longs = new ArrayList<>();
+        longs.add(String.valueOf(1L));
+        userRolesOnlyDTO.setRoles(longs);
+        this.mockMvc.perform(patch("/admin/users/1/roles").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
+                ).andExpect(status().isOk());
+        Optional<User> optionalUser = userRepo.findById(String.valueOf(1L));
+        assertTrue(optionalUser.isPresent());
+        Assertions.assertEquals("Administrator", optionalUser.get().getRoles().stream().toList().get(0).getName());
+    }
+
+    @Test
+    void patchNonExistingUser() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserRolesOnlyDTO userRolesOnlyDTO  = new UserRolesOnlyDTO();
+        List<String> longs = new ArrayList<>();
+        longs.add(String.valueOf(1L));
+        userRolesOnlyDTO.setRoles(longs);
+        this.mockMvc.perform(patch("/admin/users/100/roles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRolesOnlyDTO))
+                ).andExpect(forwardedUrl(null))
+                 .andExpect(status().isNotFound());
+    }
+
+    @Test
     void tryToAddInvalidUser() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserRequestDTO userRequestDTO  = new UserRequestDTO();
@@ -106,7 +165,7 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         userRequestDTO.setRoomNumber(null);
         userRequestDTO.setPassword("");
         userRequestDTO.setRoles(null);
-        this.mockMvc.perform(post("/users")
+        this.mockMvc.perform(post("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDTO)))
                 .andExpect(status().isBadRequest())

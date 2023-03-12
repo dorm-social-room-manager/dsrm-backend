@@ -1,5 +1,6 @@
-package com.dsrm.dsrmbackend;
+package com.dsrm.dsrmbackend.admin;
 
+import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
 import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.repositories.RoleRepo;
@@ -25,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Testcontainers
 @DirtiesContext
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {AbstractIntegrationTest.DatabaseInitializer.class})
-public class RoleControllerTests extends AbstractIntegrationTest {
+public class AdminRoleControllerTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,7 +47,7 @@ public class RoleControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void getExistentRole() throws Exception {
-        this.mockMvc.perform(get("/roles/2")
+        this.mockMvc.perform(get("/admin/roles/2")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Uzytkownik"));
@@ -53,14 +55,14 @@ public class RoleControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void tryToGetNonexistentRole() throws Exception {
-        this.mockMvc.perform(get("/roles/1487")
+        this.mockMvc.perform(get("/admin/roles/1487")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void getRolesInRange() throws Exception {
-        this.mockMvc.perform(get("/roles?page=0%size=2")
+        this.mockMvc.perform(get("/admin/roles?page=0%size=2")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value("Administrator"))
@@ -72,7 +74,7 @@ public class RoleControllerTests extends AbstractIntegrationTest {
     public void addRole() throws Exception {
         RoleRequestDTO roleRequestDTO = new RoleRequestDTO();
         roleRequestDTO.setName("Moderator");
-        MvcResult result = this.mockMvc.perform(post("/roles")
+        MvcResult result = this.mockMvc.perform(post("/admin/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(roleRequestDTO)))
                 .andExpect(status().isCreated())

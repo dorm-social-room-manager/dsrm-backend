@@ -8,7 +8,7 @@ import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 
 
-abstract class AbstractIntegrationTest{
+public abstract class AbstractIntegrationTest{
 
 
     @Container
@@ -18,7 +18,7 @@ abstract class AbstractIntegrationTest{
             .withPassword("1234")
             .withInitScript("dsrm_database.sql");
 
-    static class DatabaseInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    public static class DatabaseInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         public void initialize(ConfigurableApplicationContext applicationContext) {
             TestPropertyValues.of(
                     "spring.datasource.url=" + container.getJdbcUrl(),
