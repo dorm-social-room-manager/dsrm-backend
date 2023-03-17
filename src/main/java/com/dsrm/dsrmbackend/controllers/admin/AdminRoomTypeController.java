@@ -49,4 +49,12 @@ public class AdminRoomTypeController {
     public ResponseEntity<Page<RoomTypeDTO>> readRoomTypes(Pageable pageable) {
         return new ResponseEntity<>(roomTypeService.getRoomTypes(pageable).map(roomTypeMapper::roomTypeToRoomTypeDTO), HttpStatus.OK);
     }
+
+    @DeleteMapping(value="/room-types/{id}")
+    public ResponseEntity<RoomType> deleteRoom(@PathVariable String id) {
+        Optional<RoomType> roomType = roomTypeService.deleteRoomType(id);
+        return roomType.map(type -> new ResponseEntity<>(type, HttpStatus.NO_CONTENT))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+
+    }
 }
