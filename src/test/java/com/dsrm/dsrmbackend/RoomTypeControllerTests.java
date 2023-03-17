@@ -1,9 +1,6 @@
 package com.dsrm.dsrmbackend;
 
-import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
-import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.repositories.RoomTypeRepo;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +11,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -68,5 +59,22 @@ public class RoomTypeControllerTests extends AbstractIntegrationTest {
                         .andExpect(jsonPath("$.content[0].name").value("Pokoj mieszkalny"))
                         .andExpect(jsonPath("$.content[1].name").value("Sala telewizyjna"));
     }
+
+    @Transactional
+    @Test
+    public void deleteExistentRoomType() throws Exception {
+        this.mockMvc.perform(delete("/admin/room-types/2")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.name").value("Sala telewizyjna"));
+    }
+
+    @Test
+    public void tryToDeleteExistentRoomType() throws Exception {
+        this.mockMvc.perform(delete("/admin/room-types/2222")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
 
 }
