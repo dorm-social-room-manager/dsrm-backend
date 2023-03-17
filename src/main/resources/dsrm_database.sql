@@ -31,7 +31,7 @@ CREATE TABLE rooms (
     id varchar(36) NOT NULL,
     room_number int NOT NULL,
     floor int NOT NULL,
-    type_id varchar(36) NOT NULL,
+    type_id varchar(36) NULL,
     max_capacity int NOT NULL,
     key_owner_id varchar(36) NULL,
     opening_time time NULL,
