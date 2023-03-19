@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class AdminRoleController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/roles", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addRole(@RequestBody RoleRequestDTO roleRequestDTO) {
+    public ResponseEntity<Void> addRole(@RequestBody @Valid RoleRequestDTO roleRequestDTO) {
         Role role = roleService.addRole(roleRequestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
