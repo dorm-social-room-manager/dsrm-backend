@@ -24,8 +24,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -97,5 +97,21 @@ public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
                         .content(objectMapper.writeValueAsString(roomTypeRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$").value("name must not be blank"));
+    }
+
+    @Transactional
+    @Test
+    public void deleteExistentRoomType() throws Exception {
+        this.mockMvc.perform(delete("/admin/room-types/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.name").value("Sala telewizyjna"));
+    }
+
+    @Test
+    public void tryToDeleteNonExistentRoomType() throws Exception {
+        this.mockMvc.perform(delete("/admin/room-types/2222")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
