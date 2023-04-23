@@ -10,13 +10,13 @@ VALUES (2, 'test02@wp.pl', 'zaq1@WSX', 'Piotr', 'Nowak', 112, str_to_date('02-02
 INSERT INTO users(id, email, password, name, surname, room_number, ban_end)
 VALUES (3, 'test03@wp.pl', 'zaq1@WSX', 'Stefan', 'Grabowski', 111, null);
 
-INSERT INTO rooms
+INSERT INTO rooms(id, room_number, floor, type_id, max_capacity, key_owner_id, opening_time, closing_time, unavailable_start, unavailable_end)
 VALUES (1, 111, 1, 1, 2, 1, (120000), (230000), null, null);
 
-INSERT INTO rooms
+INSERT INTO rooms(id, room_number, floor, type_id, max_capacity, key_owner_id, opening_time, closing_time, unavailable_start, unavailable_end)
 VALUES (2, 112, 1, 1, 2, 1, (120000), (230000), null, null);
 
-INSERT INTO rooms
+INSERT INTO rooms(id, room_number, floor, type_id, max_capacity, key_owner_id, opening_time, closing_time, unavailable_start, unavailable_end)
 VALUES (3, 101, 1, 2, 6, 2, (120000), (230000), null, null);
 
 
