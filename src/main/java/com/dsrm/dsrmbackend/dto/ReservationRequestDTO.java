@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 public class ReservationRequestDTO {
     @NotNull
     private String room;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @NotNull
-    private LocalDateTime openingTime;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime from;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @NotNull
-    private LocalDateTime closingTime;
+    private LocalDateTime to;
     @NotNull
     private String user;
 }

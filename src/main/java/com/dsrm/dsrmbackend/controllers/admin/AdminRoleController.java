@@ -5,7 +5,9 @@ import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
 import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.mappers.RoleMapper;
 import com.dsrm.dsrmbackend.services.RoleService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,7 +46,8 @@ public class AdminRoleController {
     }
 
     @GetMapping(value = "/roles")
-    public ResponseEntity<Page<RoleDTO>> readRoles(Pageable pageable) {
+    @PageableAsQueryParam
+    public ResponseEntity<Page<RoleDTO>> readRoles(@Schema(hidden = true) Pageable pageable) {
         return new ResponseEntity<>(roleService.getRoles(pageable).map(roleMapper::roleToRoleDTO),HttpStatus.OK);
     }
 }

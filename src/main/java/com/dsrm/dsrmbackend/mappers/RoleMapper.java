@@ -4,7 +4,7 @@ import com.dsrm.dsrmbackend.dto.RoleDTO;
 import com.dsrm.dsrmbackend.dto.RoleRequestDTO;
 import com.dsrm.dsrmbackend.entities.Role;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+
 
 import java.util.List;
 import java.util.Set;
@@ -19,5 +19,5 @@ public interface RoleMapper {
 
     Set<Role> toSetMap(List<Role> list);
 
-    Role toRole(Long id);
+    Role toRole(String id);
 }

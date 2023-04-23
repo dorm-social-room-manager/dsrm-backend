@@ -71,8 +71,8 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object> body = new HashMap<>();
         body.put("room",1);
-        body.put("openingTime","2023-02-21 12:20:00");
-        body.put("closingTime","2023-02-22 13:20:00");
+        body.put("from","2023-02-21 12:20:00");
+        body.put("to","2023-02-22 13:20:00");
         body.put("user",2);
         MvcResult result = this.mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -122,16 +122,16 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
         ReservationRequestDTO reservationRequestDTO  = new ReservationRequestDTO();
         reservationRequestDTO.setUser(null);
         reservationRequestDTO.setRoom(null);
-        reservationRequestDTO.setOpeningTime(null);
-        reservationRequestDTO.setClosingTime(null);
+        reservationRequestDTO.setFrom(null);
+        reservationRequestDTO.setTo(null);
         this.mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                         .andExpect(status().isBadRequest())
                         .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user must not be null",
                         "room must not be null",
-                        "openingTime must not be null",
-                        "closingTime must not be null"))));
+                        "from must not be null",
+                        "to must not be null"))));
     }
 
 }

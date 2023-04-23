@@ -12,7 +12,7 @@ public interface RoomMapper {
 
     @Mapping(source = "number", target = "roomNumber")
     Room roomReqDTOToRoom(RoomRequestDTO roomDto);
-    RoomType map(Long id);
+    RoomType map(String id);
     RoomDTO roomToRoomDTO(Room room);
-    Room toRoom(Long id);
+    Room toRoom(String id);
 }
