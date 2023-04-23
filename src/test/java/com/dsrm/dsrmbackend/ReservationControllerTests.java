@@ -59,8 +59,8 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
     void retrieveExistingReservation() throws Exception {
         this.mockMvc.perform(get("/reservations/1").contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(jsonPath("$.room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.startTime", equalTo("2023-02-02 12:00:00")))
-                .andExpect(jsonPath("$.endTime", equalTo("2023-02-02 13:00:00")))
+                .andExpect(jsonPath("$.from", equalTo("2023-02-02 12:00:00")))
+                .andExpect(jsonPath("$.to", equalTo("2023-02-02 13:00:00")))
                 .andExpect(jsonPath("$.user.name", equalTo("Stefan")))
                 .andExpect(status().isOk());
     }
@@ -96,12 +96,12 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.content[0].startTime", equalTo("2023-02-02 12:00:00")))
-                .andExpect(jsonPath("$.content[0].endTime", equalTo("2023-02-02 13:00:00")))
+                .andExpect(jsonPath("$.content[0].from", equalTo("2023-02-02 12:00:00")))
+                .andExpect(jsonPath("$.content[0].to", equalTo("2023-02-02 13:00:00")))
                 .andExpect(jsonPath("$.content[0].user.name", equalTo("Stefan")))
                 .andExpect(jsonPath("$.content[1].room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.content[1].startTime", equalTo("2023-02-03 12:00:00")))
-                .andExpect(jsonPath("$.content[1].endTime", equalTo("2023-02-03 13:00:00")))
+                .andExpect(jsonPath("$.content[1].from", equalTo("2023-02-03 12:00:00")))
+                .andExpect(jsonPath("$.content[1].to", equalTo("2023-02-03 13:00:00")))
                 .andExpect(jsonPath("$.content[1].user.name", equalTo("Piotr")));
     }
 
@@ -111,8 +111,8 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.content[0].startTime", equalTo("2023-02-03 12:00:00")))
-                .andExpect(jsonPath("$.content[0].endTime", equalTo("2023-02-03 13:00:00")))
+                .andExpect(jsonPath("$.content[0].from", equalTo("2023-02-03 12:00:00")))
+                .andExpect(jsonPath("$.content[0].to", equalTo("2023-02-03 13:00:00")))
                 .andExpect(jsonPath("$.content[0].user.name", equalTo("Piotr")));
     }
 
