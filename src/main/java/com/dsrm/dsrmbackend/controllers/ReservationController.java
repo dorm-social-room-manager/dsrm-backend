@@ -4,6 +4,7 @@ import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
 import com.dsrm.dsrmbackend.entities.Reservation;
 import com.dsrm.dsrmbackend.mappers.ReservationMapper;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,7 +49,7 @@ public class ReservationController {
 
     @GetMapping(value = "/reservations")
     @PageableAsQueryParam
-    public ResponseEntity<Page<ReservationDTO>> readReservations(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false) String userId) {
+    public ResponseEntity<Page<ReservationDTO>> readReservations(@Parameter(hidden = true) @Schema(hidden = true)  Pageable pageable, @RequestParam(required = false) String userId) {
         Page<Reservation> reservations = reservationService.getReservations(pageable,userId);
         return new ResponseEntity<>(reservations.map(reservationMapper::toReservationDTO),HttpStatus.OK);
     }

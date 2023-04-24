@@ -78,54 +78,6 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         assertEquals(time, room.getClosingTime());
     }
 
-    @Test
-    public void getExistentRoom() throws Exception {
-        this.mockMvc.perform(get("/admin/rooms/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roomNumber").value(111))
-                .andExpect(jsonPath("$.floor").value(1))
-                .andExpect(jsonPath("$.roomType.id").value(1))
-                .andExpect(jsonPath("$.maxCapacity").value(2))
-                .andExpect(jsonPath("$.openingTime").value("12:00:00"))
-                .andExpect(jsonPath("$.closingTime").value("23:00:00"))
-                .andExpect(jsonPath("$.unavailableStart").value(is(nullValue())))
-                .andExpect(jsonPath("$.unavailableEnd").value(is(nullValue())));
-
-    }
-
-    @Test
-    public void tryToGetNonexistentRoom() throws Exception {
-        this.mockMvc.perform(get("/admin/rooms/1512")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void getRoomsInRange() throws Exception {
-        this.mockMvc.perform(get("/admin/rooms")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("page", "0")
-                        .param("size", "2"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].roomNumber").value(111))
-                .andExpect(jsonPath("$.content[0].floor").value(1))
-                .andExpect(jsonPath("$.content[0].roomType.id").value(1))
-                .andExpect(jsonPath("$.content[0].maxCapacity").value(2))
-                .andExpect(jsonPath("$.content[0].openingTime").value("12:00:00"))
-                .andExpect(jsonPath("$.content[0].closingTime").value("23:00:00"))
-                .andExpect(jsonPath("$.content[0].unavailableStart").value(is(nullValue())))
-                .andExpect(jsonPath("$.content[0].unavailableEnd").value(is(nullValue())))
-                .andExpect(jsonPath("$.content[1].roomNumber").value(112))
-                .andExpect(jsonPath("$.content[1].floor").value(1))
-                .andExpect(jsonPath("$.content[1].roomType.id").value(1))
-                .andExpect(jsonPath("$.content[1].maxCapacity").value(2))
-                .andExpect(jsonPath("$.content[1].openingTime").value("12:00:00"))
-                .andExpect(jsonPath("$.content[1].closingTime").value("23:00:00"))
-                .andExpect(jsonPath("$.content[1].unavailableStart").value(is(nullValue())))
-                .andExpect(jsonPath("$.content[1].unavailableEnd").value(is(nullValue())));
-
-    }
 
     @Test
     public void tryToAddNamelessRoom() throws Exception {

@@ -2,15 +2,10 @@ package com.dsrm.dsrmbackend.controllers;
 
 import com.dsrm.dsrmbackend.dto.UserDTO;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
-import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.services.UserService;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
