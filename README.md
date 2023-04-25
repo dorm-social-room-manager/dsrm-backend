@@ -50,8 +50,13 @@ dsrm.auth.jwt.RefreshExpirationMs = # refresh token expiration time in milisecon
 ./mvnw spring-boot:run
 ```
 
-
 **NOTE:** Running through Maven may require to set `JAVA_HOME` system variable to your JDK location
+
+### Test data
+To load initial data from `data.sql` for testing you should add
+`spring.jpa.defer-datasource-initialization=true` and `spring.sql.init.mode=always`
+to application.properties
+
 
 
 
