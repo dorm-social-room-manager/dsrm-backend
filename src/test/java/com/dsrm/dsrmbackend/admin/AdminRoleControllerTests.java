@@ -87,4 +87,13 @@ public class AdminRoleControllerTests extends AbstractIntegrationTest {
         assertEquals("Moderator", role.getName());
     }
 
+    @Test
+    public void tryToAddEmptyRole() throws Exception {
+        RoleRequestDTO role = new RoleRequestDTO();
+        this.mockMvc.perform(post("/admin/roles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(role)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("name must not be blank"));
+    }
 }
