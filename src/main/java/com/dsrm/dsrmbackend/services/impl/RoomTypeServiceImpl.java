@@ -35,7 +35,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     @Override
     public Optional<RoomType> deleteRoomType(String id) {
         Optional<RoomType> roomType = roomTypeRepo.findById(id);
-        roomTypeRepo.deleteById(id);
+        roomType.ifPresent(roomTypeRepo::delete);
         return roomType;
     }
 }
