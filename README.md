@@ -57,9 +57,12 @@ To load initial data from `data.sql` for testing you should add
 `spring.jpa.defer-datasource-initialization=true` and `spring.sql.init.mode=always`
 to application.properties
 
+### Authentication properties
+There are two authentication properties that must be set:
+ - `dsrm.auth.jwt.ExpirationMs`
+ - `dsrm.auth.jwt.RefreshExpirationMs`
 
-
-
-
+`dsrm.auth.jwt.ExpirationMs` specifies login token expiration time in miliseconds
+`dsrm.auth.jwt.RefreshExpirationMs` specifies refresh token expiration time in miliseconds
 
 
