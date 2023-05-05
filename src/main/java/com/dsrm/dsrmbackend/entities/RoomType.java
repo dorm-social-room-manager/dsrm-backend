@@ -1,5 +1,6 @@
 package com.dsrm.dsrmbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class RoomType {
     @Id
     private String id;
     private String name;
+    @JsonIgnore
     @OneToMany(mappedBy = "roomType", cascade = CascadeType.REMOVE)
     private List<Room> rooms;
 }
