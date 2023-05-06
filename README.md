@@ -58,11 +58,11 @@ To load initial data from `data.sql` for testing you should add
 to application.properties
 
 ### Authentication properties
-There are two authentication properties that must be set:
+There are two authentication properties that can be overridden:
  - `dsrm.auth.jwt.ExpirationMs`
  - `dsrm.auth.jwt.RefreshExpirationMs`
 
-`dsrm.auth.jwt.ExpirationMs` specifies login token expiration time in miliseconds
-`dsrm.auth.jwt.RefreshExpirationMs` specifies refresh token expiration time in miliseconds
+`dsrm.auth.jwt.ExpirationMs` specifies login token expiration time in miliseconds. Default: 3600000
+`dsrm.auth.jwt.RefreshExpirationMs` specifies refresh token expiration time in miliseconds. Default: 86400000
 
 
