@@ -22,6 +22,7 @@
         <jacoco.version>0.8.10</jacoco.version>
         <instancio.version>2.11.0</instancio.version>
         <lombok.version>1.18.24</lombok.version>
+        <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
 
     </properties>
     <dependencies>
@@ -92,18 +93,18 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
+            <version>${jsonwebtoken.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
+            <version>${jsonwebtoken.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
+            <version>${jsonwebtoken.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
