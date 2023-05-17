@@ -2,6 +2,7 @@ package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.JwtResponse;
 import com.dsrm.dsrmbackend.dto.LoginDetailsRequestDTO;
+import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.AuthService;
@@ -42,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
         return Jwts.builder().setSubject(user.getEmail()).setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .setClaims(Map.of("username", user.getEmail()))
-                .addClaims(Map.of("roles", user.getRoles()))
+                .addClaims(Map.of("roles", user.getRoles().stream().map(Role::getName).toList()))
                 .signWith(this.getSigningKey())
                 .compact();
     }
