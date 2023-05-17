@@ -6,7 +6,7 @@ import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.AuthService;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,10 +28,14 @@ public class AuthServiceImpl implements AuthService {
     @Value("${dsrm.auth.jwt.RefreshExpirationMs}")
     private int jwtRefreshExpirationMs;
 
+    @Value("${dsrm.auth.jwt.SecretKey}")
+    private String secretKey;
+
     private final UserRepo userRepo;
 
     private Key getSigningKey() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        byte[] keyBytes = Decoders.BASE64.decode(this.secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private String generateAccessToken(User user) {
