@@ -49,8 +49,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String id) {
-        Reservation newreservation = reservationMapper.toReservation(reservationRequestDTO);
-        newreservation.setId(id);
-        return reservationRepo.save(newreservation);
+        Reservation newReservation = reservationMapper.toReservation(reservationRequestDTO);
+        newReservation.setId(id);
+        return reservationRepo.save(newReservation);
     }
 }

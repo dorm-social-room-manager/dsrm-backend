@@ -45,7 +45,7 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     private MockMvc mockMvc;
 
     @Autowired
-    ReservationRepo reservationRepo;
+    private ReservationRepo reservationRepo;
 
 
     @Test
