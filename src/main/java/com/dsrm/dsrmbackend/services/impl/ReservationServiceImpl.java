@@ -50,17 +50,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String id) {
         Reservation newreservation = reservationMapper.toReservation(reservationRequestDTO);
-
-        Optional<Reservation> existingReservation = reservationRepo.findById(id);
-        if (existingReservation.isEmpty()) {
-            newreservation.setId(id);
-            return reservationRepo.save(newreservation);
-        }
-        Reservation oldReservation = existingReservation.get();
-        oldReservation.setRoom(newreservation.getRoom());
-        oldReservation.setStartTime(newreservation.getStartTime());
-        oldReservation.setEndTime(newreservation.getEndTime());
-        oldReservation.setUser(newreservation.getUser());
-        return reservationRepo.save(oldReservation);
+        newreservation.setId(id);
+        return reservationRepo.save(newreservation);
     }
 }

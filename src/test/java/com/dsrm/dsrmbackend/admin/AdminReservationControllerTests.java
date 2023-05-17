@@ -111,10 +111,10 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         Optional<Reservation> reservation = reservationRepo.findById("1");
         assertTrue(reservation.isPresent());
         Reservation reservation1 = reservation.get();
-        assertEquals(101, reservation1.getRoom().getRoomNumber());
+        assertEquals(111, reservation1.getRoom().getRoomNumber());
         assertEquals("3", reservation1.getUser().getId());
-        assertEquals(LocalDateTime.parse("2023-05-21 12:20:00"), reservation1.getStartTime());
-        assertEquals(LocalDateTime.parse("2023-05-22 13:20:00"), reservation1.getEndTime());
+        assertEquals(LocalDateTime.parse("2023-05-21T12:20:00"), reservation1.getStartTime());
+        assertEquals(LocalDateTime.parse("2023-05-22T13:20:00"), reservation1.getEndTime());
     }
 
     @Test
