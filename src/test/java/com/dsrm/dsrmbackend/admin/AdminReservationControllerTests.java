@@ -20,8 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,11 +46,12 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Autowired
     private ReservationRepo reservationRepo;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @Transactional
     void addValidReservation() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object> body = new HashMap<>();
         body.put("room",1);
         body.put("from","2023-02-21 12:20:00");
@@ -75,7 +75,6 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
 
     @Test
     void tryToAddInvalidReservation() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         ReservationRequestDTO reservationRequestDTO  = new ReservationRequestDTO();
         reservationRequestDTO.setUser(null);
         reservationRequestDTO.setRoom(null);
@@ -95,16 +94,14 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Test
     @Transactional
     void updateValidReservation() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String,Object> body = new HashMap<>();
-        body.put("room",1);
-        body.put("from","2023-05-21 12:20:00");
-        body.put("to","2023-05-22 13:20:00");
-        body.put("user",3);
-
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom("1");
+        reservationRequestDTO.setFrom(LocalDateTime.parse("2023-05-21T12:20:00"));
+        reservationRequestDTO.setTo(LocalDateTime.parse("2023-05-22T13:20:00"));
+        reservationRequestDTO.setUser("2");
         this.mockMvc.perform(put("/admin/reservations/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(body)))
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Location", "http://localhost/admin/reservations/1"));
 
@@ -112,7 +109,7 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         assertTrue(reservation.isPresent());
         Reservation reservation1 = reservation.get();
         assertEquals(111, reservation1.getRoom().getRoomNumber());
-        assertEquals("3", reservation1.getUser().getId());
+        assertEquals("2", reservation1.getUser().getId());
         assertEquals(LocalDateTime.parse("2023-05-21T12:20:00"), reservation1.getStartTime());
         assertEquals(LocalDateTime.parse("2023-05-22T13:20:00"), reservation1.getEndTime());
     }
@@ -120,16 +117,14 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Test
     @Transactional
     void addReservationThroughUpdate() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String,Object> body = new HashMap<>();
-        body.put("room",1);
-        body.put("from","2023-05-21 12:20:00");
-        body.put("to","2023-05-22 13:20:00");
-        body.put("user",3);
-
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom("1");
+        reservationRequestDTO.setFrom(LocalDateTime.parse("2023-05-21T12:20:00"));
+        reservationRequestDTO.setTo(LocalDateTime.parse("2023-05-22T13:20:00"));
+        reservationRequestDTO.setUser("3");
         this.mockMvc.perform(put("/admin/reservations/100")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(body)))
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Location", "http://localhost/admin/reservations/100"));
 
