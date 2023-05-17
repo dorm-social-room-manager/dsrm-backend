@@ -17,4 +17,6 @@ public interface ReservationService {
     Page<Reservation> getReservations (Pageable pageable);
 
     Page<Reservation> getReservations(Pageable pageable, String userId);
+
+    Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String roomId);
 }

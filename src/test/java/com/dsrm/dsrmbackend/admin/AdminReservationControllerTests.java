@@ -31,6 +31,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -44,7 +45,7 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     private MockMvc mockMvc;
 
     @Autowired
-    private ReservationRepo reservationRepo;
+    ReservationRepo reservationRepo;
 
 
     @Test
@@ -88,6 +89,58 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         "room must not be null",
                         "from must not be null",
                         "to must not be null"))));
+    }
+
+
+    @Test
+    @Transactional
+    void updateValidReservation() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String,Object> body = new HashMap<>();
+        body.put("room",1);
+        body.put("from","2023-05-21 12:20:00");
+        body.put("to","2023-05-22 13:20:00");
+        body.put("user",3);
+
+        this.mockMvc.perform(put("/admin/reservations/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(body)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", "http://localhost/admin/reservations/1"));
+
+        Optional<Reservation> reservation = reservationRepo.findById("1");
+        assertTrue(reservation.isPresent());
+        Reservation reservation1 = reservation.get();
+        assertEquals(101, reservation1.getRoom().getRoomNumber());
+        assertEquals("3", reservation1.getUser().getId());
+        assertEquals(LocalDateTime.parse("2023-05-21 12:20:00"), reservation1.getStartTime());
+        assertEquals(LocalDateTime.parse("2023-05-22 13:20:00"), reservation1.getEndTime());
+    }
+
+    @Test
+    @Transactional
+    void addReservationThroughUpdate() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String,Object> body = new HashMap<>();
+        body.put("room",1);
+        body.put("from","2023-05-21 12:20:00");
+        body.put("to","2023-05-22 13:20:00");
+        body.put("user",3);
+
+        this.mockMvc.perform(put("/admin/reservations/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(body)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", "http://localhost/admin/reservations/100"));
+
+        Optional<Reservation> reservation = reservationRepo.findById("100");
+        assertTrue(reservation.isPresent());
+
+        Reservation reservation1 = reservation.get();
+        assertEquals(111, reservation1.getRoom().getRoomNumber());
+        assertEquals("3", reservation1.getUser().getId());
+        assertEquals(LocalDateTime.parse("2023-05-21T12:20:00"), reservation1.getStartTime());
+        assertEquals(LocalDateTime.parse("2023-05-22T13:20:00"), reservation1.getEndTime());
     }
 
 }

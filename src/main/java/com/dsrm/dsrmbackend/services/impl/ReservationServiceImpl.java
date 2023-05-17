@@ -2,6 +2,8 @@ package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
 import com.dsrm.dsrmbackend.entities.Reservation;
+import com.dsrm.dsrmbackend.entities.Room;
+import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.mappers.ReservationMapper;
 import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.services.ReservationService;
@@ -43,5 +45,22 @@ public class ReservationServiceImpl implements ReservationService {
                     (Specification<Reservation>) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user").get("id"), userId));
         }
         return reservationRepo.findAll(reservationSpecification, pageable);
+    }
+
+    @Override
+    public Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String id) {
+        Reservation newreservation = reservationMapper.toReservation(reservationRequestDTO);
+
+        Optional<Reservation> existingReservation = reservationRepo.findById(id);
+        if (existingReservation.isEmpty()) {
+            newreservation.setId(id);
+            return reservationRepo.save(newreservation);
+        }
+        Reservation oldReservation = existingReservation.get();
+        oldReservation.setRoom(newreservation.getRoom());
+        oldReservation.setStartTime(newreservation.getStartTime());
+        oldReservation.setEndTime(newreservation.getEndTime());
+        oldReservation.setUser(newreservation.getUser());
+        return reservationRepo.save(oldReservation);
     }
 }
