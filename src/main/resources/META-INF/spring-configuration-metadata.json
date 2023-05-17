@@ -11,6 +11,12 @@
       "type": "java.lang.Integer",
       "description": "Refresh token expiration time in milliseconds.",
       "defaultValue": "86400000"
+    },
+    {
+      "name": "dsrm.auth.jwt.SecretKey",
+      "type": "java.lang.String",
+      "description": "Secret key to sign jwt responses.",
+      "defaultValue": ""
     }
   ],
   "hints": []
