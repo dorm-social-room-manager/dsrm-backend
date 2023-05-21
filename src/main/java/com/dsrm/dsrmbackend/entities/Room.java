@@ -1,5 +1,6 @@
 package com.dsrm.dsrmbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity(name = "rooms")
 @Getter
@@ -36,4 +38,8 @@ public class Room {
     private LocalDate unavailableStart;
     @Column(name = "unavailable_end")
     private LocalDate unavailableEnd;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    private List<Reservation> reservationList;
 }
