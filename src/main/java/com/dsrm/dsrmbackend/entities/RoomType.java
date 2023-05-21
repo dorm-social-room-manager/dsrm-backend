@@ -19,6 +19,11 @@ public class RoomType {
     private String id;
     private String name;
     @JsonIgnore
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "roomType", cascade={CascadeType.PERSIST})
     private List<Room> rooms;
+
+    @PreRemove
+    private void preRemove() {
+        rooms.forEach(child -> child.setRoomType(null));
+    }
 }
