@@ -12,4 +12,6 @@ public interface RoomService {
     Optional<Room> getRoom(String roomId);
     Page<Room> getRooms(Pageable pageable);
     Room updateRoom(RoomRequestDTO update, String roomId);
+
+    Optional<Room> deleteRoom(String id);
 }
