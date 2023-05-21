@@ -180,4 +180,24 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
         assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
     }
+
+    @Test
+    @Transactional
+    public void deleteExistentRoom() throws Exception {
+        this.mockMvc.perform(delete("/admin/rooms/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.roomNumber").value(111));
+        this.mockMvc.perform(get("/reservations/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    public void deleteNonExistentRoom() throws Exception {
+        this.mockMvc.perform(delete("/admin/rooms/4123")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }
