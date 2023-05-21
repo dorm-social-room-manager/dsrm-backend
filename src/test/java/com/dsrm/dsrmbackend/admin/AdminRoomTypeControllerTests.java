@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -106,6 +107,13 @@ public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.name").value("Sala telewizyjna"));
+        this.mockMvc.perform(get("/room-types/2")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+        this.mockMvc.perform(get("/rooms/3")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roomType").value(nullValue()));
     }
 
     @Test
