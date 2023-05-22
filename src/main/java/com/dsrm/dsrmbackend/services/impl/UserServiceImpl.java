@@ -6,6 +6,7 @@ import com.dsrm.dsrmbackend.entities.Reservation;
 import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
+import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.RoleRepo;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.UserService;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final UserMapper userMapper;
     private final RoleRepo roleRepo;
+    private final ReservationRepo reservationRepo;
 
     @Override
     public User addUser(UserRequestDTO userRequestDTO){
@@ -78,10 +80,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepo.findById(id);
         if (user.isEmpty())
             return user;
-        User existingUser = user.get();
-        Set<Reservation> reservations = existingUser.getReservations();
-        reservations.forEach(reservation -> reservation.setUser(null));
-        reservations.clear();
+        reservationRepo.deleteAll(user.get().getReservations());
         userRepo.deleteById(id);
         return user;
     }

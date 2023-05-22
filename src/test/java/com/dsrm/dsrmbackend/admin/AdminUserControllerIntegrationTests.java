@@ -189,8 +189,8 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
         this.mockMvc.perform(delete("/admin/users/2").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         this.mockMvc.perform(get("/reservations/2").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user").value(nullValue()));
+                .andExpect(status().isNotFound());
+
     }
 
 
