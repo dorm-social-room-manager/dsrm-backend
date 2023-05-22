@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity(name = "users")
@@ -26,5 +27,6 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Reservation> reservations;
 }

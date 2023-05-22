@@ -23,7 +23,7 @@ public class Reservation {
     private LocalDateTime startTime;
     @Column(name = "end_time")
     private LocalDateTime endTime;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
 }

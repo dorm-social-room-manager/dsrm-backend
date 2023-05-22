@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -188,7 +189,8 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
         this.mockMvc.perform(delete("/admin/users/2").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         this.mockMvc.perform(get("/reservations/2").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.user").value(nullValue()));
     }
 
 
