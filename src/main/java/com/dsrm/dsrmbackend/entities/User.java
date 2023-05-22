@@ -1,5 +1,6 @@
 package com.dsrm.dsrmbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
     private Set<Reservation> reservations;
 }
