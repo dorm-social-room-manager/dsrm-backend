@@ -94,11 +94,16 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Test
     @Transactional
     void updateValidReservation() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "1";
+        String userID = "2";
         ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
-        reservationRequestDTO.setRoom("1");
-        reservationRequestDTO.setFrom(LocalDateTime.parse("2023-05-21T12:20:00"));
-        reservationRequestDTO.setTo(LocalDateTime.parse("2023-05-22T13:20:00"));
-        reservationRequestDTO.setUser("2");
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
         this.mockMvc.perform(put("/admin/reservations/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
@@ -109,19 +114,24 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         assertTrue(reservation.isPresent());
         Reservation reservation1 = reservation.get();
         assertEquals(111, reservation1.getRoom().getRoomNumber());
-        assertEquals("2", reservation1.getUser().getId());
-        assertEquals(LocalDateTime.parse("2023-05-21T12:20:00"), reservation1.getStartTime());
-        assertEquals(LocalDateTime.parse("2023-05-22T13:20:00"), reservation1.getEndTime());
+        assertEquals(userID, reservation1.getUser().getId());
+        assertEquals(from, reservation1.getStartTime());
+        assertEquals(to, reservation1.getEndTime());
     }
 
     @Test
     @Transactional
     void addReservationThroughUpdate() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "1";
+        String userID = "3";
         ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
-        reservationRequestDTO.setRoom("1");
-        reservationRequestDTO.setFrom(LocalDateTime.parse("2023-05-21T12:20:00"));
-        reservationRequestDTO.setTo(LocalDateTime.parse("2023-05-22T13:20:00"));
-        reservationRequestDTO.setUser("3");
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
         this.mockMvc.perform(put("/admin/reservations/100")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
@@ -130,12 +140,11 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
 
         Optional<Reservation> reservation = reservationRepo.findById("100");
         assertTrue(reservation.isPresent());
-
         Reservation reservation1 = reservation.get();
         assertEquals(111, reservation1.getRoom().getRoomNumber());
-        assertEquals("3", reservation1.getUser().getId());
-        assertEquals(LocalDateTime.parse("2023-05-21T12:20:00"), reservation1.getStartTime());
-        assertEquals(LocalDateTime.parse("2023-05-22T13:20:00"), reservation1.getEndTime());
+        assertEquals(userID, reservation1.getUser().getId());
+        assertEquals(from, reservation1.getStartTime());
+        assertEquals(to, reservation1.getEndTime());
     }
 
 }
