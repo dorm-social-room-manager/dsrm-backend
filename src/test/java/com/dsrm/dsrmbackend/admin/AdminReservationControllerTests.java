@@ -30,7 +30,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -89,5 +89,19 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         "from must not be null",
                         "to must not be null"))));
     }
+    @Test
+    void deleteInvalidReservation() throws Exception {
+        this.mockMvc.perform(delete("/admin/reservations/100").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    void deleteValidReservation() throws Exception{
+        this.mockMvc.perform(delete("/admin/reservations/1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+
 
 }

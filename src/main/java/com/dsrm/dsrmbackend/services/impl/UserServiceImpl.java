@@ -72,4 +72,13 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll(userSpecification, pageable);
     }
 
+    @Override
+    public Optional<User> deleteUser(String id) {
+        Optional<User> user = userRepo.findById(id);
+        if (user.isEmpty())
+            return user;
+        userRepo.deleteById(id);
+        return user;
+    }
+
 }

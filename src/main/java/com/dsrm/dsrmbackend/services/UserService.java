@@ -19,4 +19,6 @@ public interface UserService {
     Page<User> getUsers(Pageable pageable, boolean isPending);
 
     Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, String id);
+
+    Optional<User> deleteUser(String id);
 }

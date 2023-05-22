@@ -44,4 +44,14 @@ public class ReservationServiceImpl implements ReservationService {
         }
         return reservationRepo.findAll(reservationSpecification, pageable);
     }
+
+    @Override
+    public Optional<Reservation> deleteReservation(String id) {
+        Optional<Reservation> reservation = reservationRepo.findById(id);
+        if (reservation.isEmpty())
+            return reservation;
+        reservationRepo.deleteById(id);
+        return reservation;
+    }
+
 }
