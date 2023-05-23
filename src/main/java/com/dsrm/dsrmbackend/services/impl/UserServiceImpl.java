@@ -80,7 +80,6 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepo.findById(id);
         if (user.isEmpty())
             return user;
-        reservationRepo.deleteAll(user.get().getReservations());
         userRepo.deleteById(id);
         return user;
     }
