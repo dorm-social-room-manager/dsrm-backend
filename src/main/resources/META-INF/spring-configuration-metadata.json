@@ -1,0 +1,17 @@
+{
+  "properties": [
+    {
+      "name": "dsrm.auth.jwt.ExpirationMs",
+      "type": "java.lang.Integer",
+      "description": "Login token expiration time in milliseconds.",
+      "defaultValue": "360000"
+    },
+    {
+      "name": "dsrm.auth.jwt.RefreshExpirationMs",
+      "type": "java.lang.Integer",
+      "description": "Refresh token expiration time in milliseconds.",
+      "defaultValue": "86400000"
+    }
+  ],
+  "hints": []
+}

@@ -7,6 +7,7 @@ import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
 import com.dsrm.dsrmbackend.services.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
@@ -48,7 +49,7 @@ public class AdminUserController {
 
     @GetMapping(value = "/users")
     @PageableAsQueryParam
-    ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) Pageable pageable,@RequestParam(required = false,defaultValue = "false") boolean isPending) {
+    ResponseEntity<Page<UserDTO>> readUsers(@Parameter(hidden = true) @Schema(hidden = true)  Pageable pageable, @RequestParam(required = false,defaultValue = "false") boolean isPending) {
         Page<User> userPage = userService.getUsers(pageable,isPending);
         return new ResponseEntity<>(userPage.map(userMapper::toUserDTO),HttpStatus.OK);
     }

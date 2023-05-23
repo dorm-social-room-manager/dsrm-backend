@@ -2,6 +2,8 @@ package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
 import com.dsrm.dsrmbackend.entities.Reservation;
+import com.dsrm.dsrmbackend.entities.Room;
+import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.mappers.ReservationMapper;
 import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.services.ReservationService;
@@ -43,5 +45,12 @@ public class ReservationServiceImpl implements ReservationService {
                     (Specification<Reservation>) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user").get("id"), userId));
         }
         return reservationRepo.findAll(reservationSpecification, pageable);
+    }
+
+    @Override
+    public Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String id) {
+        Reservation newReservation = reservationMapper.toReservation(reservationRequestDTO);
+        newReservation.setId(id);
+        return reservationRepo.save(newReservation);
     }
 }

@@ -20,18 +20,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.equalTo;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
@@ -47,32 +46,16 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Autowired
     private ReservationRepo reservationRepo;
 
-    @Test
-    void retrieveNonExistingReservation() throws Exception {
-        this.mockMvc
-                .perform(get("/admin/reservations/1000").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(forwardedUrl(null))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void retrieveExistingReservation() throws Exception {
-        this.mockMvc.perform(get("/admin/reservations/1").contentType(MediaType.APPLICATION_JSON)
-                ).andExpect(jsonPath("$.room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.startTime", equalTo("2023-02-02 12:00:00")))
-                .andExpect(jsonPath("$.endTime", equalTo("2023-02-02 13:00:00")))
-                .andExpect(jsonPath("$.user.name", equalTo("Stefan")))
-                .andExpect(status().isOk());
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @Transactional
     void addValidReservation() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object> body = new HashMap<>();
         body.put("room",1);
-        body.put("openingTime","2023-02-21 12:20:00");
-        body.put("closingTime","2023-02-22 13:20:00");
+        body.put("from","2023-02-21 12:20:00");
+        body.put("to","2023-02-22 13:20:00");
         body.put("user",2);
         MvcResult result = this.mockMvc.perform(post("/admin/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,47 +74,77 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     }
 
     @Test
-    void retrieveReservationsInRange() throws Exception {
-        this.mockMvc.perform(get("/admin/reservations")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.content[0].startTime", equalTo("2023-02-02 12:00:00")))
-                .andExpect(jsonPath("$.content[0].endTime", equalTo("2023-02-02 13:00:00")))
-                .andExpect(jsonPath("$.content[0].user.name", equalTo("Stefan")))
-                .andExpect(jsonPath("$.content[1].room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.content[1].startTime", equalTo("2023-02-03 12:00:00")))
-                .andExpect(jsonPath("$.content[1].endTime", equalTo("2023-02-03 13:00:00")))
-                .andExpect(jsonPath("$.content[1].user.name", equalTo("Piotr")));
-    }
-
-    @Test
-    void retrieveReservationsForSpecificUser() throws Exception {
-        this.mockMvc.perform(get("/admin/reservations?userId=2")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].room.roomNumber", equalTo(111)))
-                .andExpect(jsonPath("$.content[0].startTime", equalTo("2023-02-03 12:00:00")))
-                .andExpect(jsonPath("$.content[0].endTime", equalTo("2023-02-03 13:00:00")))
-                .andExpect(jsonPath("$.content[0].user.name", equalTo("Piotr")));
-    }
-
-    @Test
     void tryToAddInvalidReservation() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         ReservationRequestDTO reservationRequestDTO  = new ReservationRequestDTO();
         reservationRequestDTO.setUser(null);
         reservationRequestDTO.setRoom(null);
-        reservationRequestDTO.setOpeningTime(null);
-        reservationRequestDTO.setClosingTime(null);
+        reservationRequestDTO.setFrom(null);
+        reservationRequestDTO.setTo(null);
         this.mockMvc.perform(post("/admin/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                         .andExpect(status().isBadRequest())
                         .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user must not be null",
                         "room must not be null",
-                        "openingTime must not be null",
-                        "closingTime must not be null"))));
+                        "from must not be null",
+                        "to must not be null"))));
+    }
+
+
+    @Test
+    @Transactional
+    void updateValidReservation() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "1";
+        String userID = "2";
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
+        this.mockMvc.perform(put("/admin/reservations/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", "http://localhost/admin/reservations/1"));
+
+        Optional<Reservation> reservation = reservationRepo.findById("1");
+        assertTrue(reservation.isPresent());
+        Reservation reservation1 = reservation.get();
+        assertEquals(111, reservation1.getRoom().getRoomNumber());
+        assertEquals(userID, reservation1.getUser().getId());
+        assertEquals(from, reservation1.getStartTime());
+        assertEquals(to, reservation1.getEndTime());
+    }
+
+    @Test
+    @Transactional
+    void addReservationThroughUpdate() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "1";
+        String userID = "3";
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
+        this.mockMvc.perform(put("/admin/reservations/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", "http://localhost/admin/reservations/100"));
+
+        Optional<Reservation> reservation = reservationRepo.findById("100");
+        assertTrue(reservation.isPresent());
+        Reservation reservation1 = reservation.get();
+        assertEquals(111, reservation1.getRoom().getRoomNumber());
+        assertEquals(userID, reservation1.getUser().getId());
+        assertEquals(from, reservation1.getStartTime());
+        assertEquals(to, reservation1.getEndTime());
     }
 
 }

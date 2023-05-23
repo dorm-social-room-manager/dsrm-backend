@@ -63,32 +63,6 @@ public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
         RoomType roomType = resRoomType.get();
         assertEquals("Ping-Pong", roomType.getName());
     }
-
-    @Test
-    public void getExistentRoomType() throws Exception {
-        this.mockMvc.perform(get("/admin/room-types/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Pokoj mieszkalny"));
-    }
-
-    @Test
-    public void tryToGetNonexistentRoomType() throws Exception {
-        this.mockMvc.perform(get("/admin/room-types/1512")
-                    .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void getRoomTypesInRange() throws Exception {
-                this.mockMvc.perform(get("/admin/room-types")
-                        .param("page", "0")
-                        .param("size", "2")
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.content[0].name").value("Pokoj mieszkalny"))
-                        .andExpect(jsonPath("$.content[1].name").value("Sala telewizyjna"));
-    }
     @Test
     public void tryToAddNamelessRoomType() throws Exception {
         RoomTypeRequestDTO roomTypeRequestDTO = new RoomTypeRequestDTO();

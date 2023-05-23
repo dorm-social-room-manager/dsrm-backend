@@ -10,9 +10,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring",uses = {RoomMapper.class, UserMapper.class})
 public interface ReservationMapper {
 
-    @Mapping(source = "openingTime", target = "startTime")
-    @Mapping(source = "closingTime", target = "endTime")
+    @Mapping(source = "from", target = "startTime")
+    @Mapping(source = "to", target = "endTime")
     Reservation toReservation(ReservationRequestDTO reservationRequestDTO);
 
+    @Mapping(source = "startTime", target = "from")
+    @Mapping(source = "endTime", target = "to")
     ReservationDTO toReservationDTO(Reservation reservation);
 }
