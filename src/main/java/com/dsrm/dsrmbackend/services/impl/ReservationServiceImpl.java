@@ -46,12 +46,8 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Optional<Reservation> deleteReservation(String id) {
-        Optional<Reservation> reservation = reservationRepo.findById(id);
-        if (reservation.isEmpty())
-            return reservation;
+    public void deleteReservation(String id) {
         reservationRepo.deleteById(id);
-        return reservation;
     }
 
 }

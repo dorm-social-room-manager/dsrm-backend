@@ -31,4 +31,10 @@ public class User {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
     private Set<Reservation> reservations;
+
+    @PreRemove
+    private void preRemove() {
+        reservations.forEach( child -> child.setRoom(null));
+    }
+
 }

@@ -3,10 +3,13 @@ package com.dsrm.dsrmbackend.admin;
 import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
+import com.dsrm.dsrmbackend.entities.Reservation;
 import com.dsrm.dsrmbackend.entities.User;
+import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,6 +52,8 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private ReservationRepo  reservationRepo;
 
     @Test
     void retrieveNonExistingUser() throws Exception {
@@ -178,19 +182,12 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
     }
 
     @Test
-    void deleteInvalidUser() throws Exception {
-        this.mockMvc.perform(delete("/admin/users/100").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-
-    }
-    @Test
     @Transactional
     void deleteValidUser() throws Exception{
         this.mockMvc.perform(delete("/admin/users/2").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-        this.mockMvc.perform(get("/reservations/2").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-
+        Optional<Reservation> reservation = reservationRepo.findById("2");
+        Assertions.assertTrue(reservation.isEmpty());
     }
 
 

@@ -20,5 +20,5 @@ public interface UserService {
 
     Optional<User> updateUser(UserRolesOnlyDTO userRolesOnlyDTO, String id);
 
-    Optional<User> deleteUser(String id);
+    void deleteUser(String id);
 }

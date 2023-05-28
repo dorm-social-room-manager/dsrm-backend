@@ -18,5 +18,5 @@ public interface ReservationService {
 
     Page<Reservation> getReservations(Pageable pageable, String userId);
 
-    Optional<Reservation> deleteReservation(String id);
+    void deleteReservation(String id);
 }

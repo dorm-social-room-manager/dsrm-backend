@@ -34,6 +34,7 @@ public class AdminReservationController {
     }
     @DeleteMapping(value = "reservations/{id}")
     ResponseEntity<Void> deleteReservation(@PathVariable String id){
-        return reservationService.deleteReservation(id).map(status -> ResponseEntity.noContent().<Void>build()).orElse(ResponseEntity.notFound().build());
+        reservationService.deleteReservation(id);
+        return ResponseEntity.noContent().build();
     }
 }

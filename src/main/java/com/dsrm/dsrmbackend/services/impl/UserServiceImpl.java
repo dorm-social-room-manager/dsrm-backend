@@ -2,11 +2,9 @@ package com.dsrm.dsrmbackend.services.impl;
 
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
-import com.dsrm.dsrmbackend.entities.Reservation;
 import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.UserMapper;
-import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.RoleRepo;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.UserService;
@@ -29,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final UserMapper userMapper;
     private final RoleRepo roleRepo;
-    private final ReservationRepo reservationRepo;
+
 
     @Override
     public User addUser(UserRequestDTO userRequestDTO){
@@ -76,12 +74,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> deleteUser(String id) {
-        Optional<User> user = userRepo.findById(id);
-        if (user.isEmpty())
-            return user;
+    public void deleteUser(String id) {
         userRepo.deleteById(id);
-        return user;
     }
 
 }

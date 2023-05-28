@@ -89,11 +89,7 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         "from must not be null",
                         "to must not be null"))));
     }
-    @Test
-    void deleteInvalidReservation() throws Exception {
-        this.mockMvc.perform(delete("/admin/reservations/100").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
+
 
     @Test
     @Transactional
