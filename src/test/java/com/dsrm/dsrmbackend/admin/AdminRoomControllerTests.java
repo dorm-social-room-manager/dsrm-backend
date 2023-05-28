@@ -190,9 +190,6 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         this.mockMvc.perform(delete("/admin/rooms/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-//        this.mockMvc.perform(get("/reservations/1")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
         assertThat(reservationRepo.findById("1")).isEmpty();
     }
 
