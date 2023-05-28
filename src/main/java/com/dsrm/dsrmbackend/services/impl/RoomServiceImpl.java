@@ -54,9 +54,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Optional<Room> deleteRoom(String id) {
+    public void deleteRoom(String id) {
         Optional<Room> room = roomRepo.findById(id);
         room.ifPresent(roomRepo::delete);
-        return room;
     }
 }
