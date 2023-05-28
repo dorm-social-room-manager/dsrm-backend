@@ -24,8 +24,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -186,8 +184,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
     public void deleteExistentRoom() throws Exception {
         this.mockMvc.perform(delete("/admin/rooms/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.roomNumber").value(111));
+                .andExpect(status().isNoContent());
         this.mockMvc.perform(get("/reservations/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -198,6 +195,6 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
     public void deleteNonExistentRoom() throws Exception {
         this.mockMvc.perform(delete("/admin/rooms/4123")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 }

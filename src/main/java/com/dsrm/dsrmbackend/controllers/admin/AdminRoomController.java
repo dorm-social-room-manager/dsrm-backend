@@ -15,8 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/admin")
@@ -49,10 +47,9 @@ public class AdminRoomController {
     }
 
     @DeleteMapping(value="/rooms/{id}")
-    public ResponseEntity<Room> deleteRoom(@PathVariable String id) {
-        Optional<Room> roomType = roomService.deleteRoom(id);
-        return roomType.map(type -> new ResponseEntity<>(type, HttpStatus.NO_CONTENT))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> deleteRoom(@PathVariable String id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.noContent().build();
 
     }
 }
