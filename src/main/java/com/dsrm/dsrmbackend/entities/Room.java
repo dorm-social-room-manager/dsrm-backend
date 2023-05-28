@@ -1,6 +1,5 @@
 package com.dsrm.dsrmbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +38,6 @@ public class Room {
     @Column(name = "unavailable_end")
     private LocalDate unavailableEnd;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
     private List<Reservation> reservationList;
 }
