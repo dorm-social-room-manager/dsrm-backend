@@ -3,6 +3,7 @@ package com.dsrm.dsrmbackend.admin;
 import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import com.dsrm.dsrmbackend.entities.Room;
+import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.RoomRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -24,6 +25,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,6 +46,9 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
 
     @Autowired
     RoomRepo roomRepo;
+
+    @Autowired
+    ReservationRepo reservationRepo;
 
     @Test
     @Transactional
@@ -185,9 +190,10 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         this.mockMvc.perform(delete("/admin/rooms/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-        this.mockMvc.perform(get("/reservations/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+//        this.mockMvc.perform(get("/reservations/1")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound());
+        assertThat(reservationRepo.findById("1")).isEmpty();
     }
 
     @Test
