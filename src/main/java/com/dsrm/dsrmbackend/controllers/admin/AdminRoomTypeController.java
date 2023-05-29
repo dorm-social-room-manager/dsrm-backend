@@ -20,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
 
 
 @RestController
@@ -42,10 +41,8 @@ public class AdminRoomTypeController {
     }
 
     @DeleteMapping(value="/room-types/{id}")
-    public ResponseEntity<RoomType> deleteRoomType(@PathVariable String id) {
-        Optional<RoomType> roomType = roomTypeService.deleteRoomType(id);
-        return roomType.map(type -> new ResponseEntity<>(type, HttpStatus.NO_CONTENT))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
-
+    public ResponseEntity<Void> deleteRoomType(@PathVariable String id) {
+        roomTypeService.deleteRoomType(id);
+        return ResponseEntity.noContent().build();
     }
 }

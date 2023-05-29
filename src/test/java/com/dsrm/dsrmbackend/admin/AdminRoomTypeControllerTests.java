@@ -84,8 +84,7 @@ public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
     public void deleteExistentRoomType() throws Exception {
         this.mockMvc.perform(delete("/admin/room-types/2")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.name").value("Sala telewizyjna"));
+                .andExpect(status().isNoContent());
         assertThat(roomTypeRepo.findById("2")).isEmpty();
         Optional<Room> room = roomRepo.findById("3");
         assertThat(room).isNotEmpty();
