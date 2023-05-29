@@ -25,8 +25,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -190,6 +190,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         this.mockMvc.perform(delete("/admin/rooms/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-        assertThat(reservationRepo.findById("1")).isEmpty();
+        assertFalse(reservationRepo.existsById("1"));
+        assertFalse(roomRepo.existsById("1"));
     }
 }
