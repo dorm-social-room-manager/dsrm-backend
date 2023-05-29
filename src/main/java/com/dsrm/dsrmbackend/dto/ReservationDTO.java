@@ -1,7 +1,5 @@
 package com.dsrm.dsrmbackend.dto;
 
-import com.dsrm.dsrmbackend.entities.Room;
-import com.dsrm.dsrmbackend.entities.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
