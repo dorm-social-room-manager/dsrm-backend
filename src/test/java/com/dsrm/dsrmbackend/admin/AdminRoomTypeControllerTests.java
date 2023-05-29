@@ -2,7 +2,9 @@ package com.dsrm.dsrmbackend.admin;
 
 import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
+import com.dsrm.dsrmbackend.entities.Room;
 import com.dsrm.dsrmbackend.entities.RoomType;
+import com.dsrm.dsrmbackend.repositories.RoomRepo;
 import com.dsrm.dsrmbackend.repositories.RoomTypeRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -22,8 +24,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -46,6 +49,8 @@ public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
     @Autowired
     RoomTypeRepo roomTypeRepo;
 
+    @Autowired
+    RoomRepo roomRepo;
     @Test
     @Transactional
     public void addRoomType() throws Exception {
@@ -81,13 +86,10 @@ public class AdminRoomTypeControllerTests extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.name").value("Sala telewizyjna"));
-        this.mockMvc.perform(get("/room-types/2")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-        this.mockMvc.perform(get("/rooms/3")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roomType").value(nullValue()));
+        assertThat(roomTypeRepo.findById("2")).isEmpty();
+        Optional<Room> room = roomRepo.findById("3");
+        assertThat(room).isNotEmpty();
+        assertNull(room.get().getRoomType());
     }
 
     @Test
