@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ReservationDTO {
-    private Room room;
+    private RoomDTO room;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Schema(type="string")
     private LocalDateTime from;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Schema(type="string")
     private LocalDateTime to;
-    private User user;
+    private UserDTO user;
 }
