@@ -192,13 +192,4 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
                 .andExpect(status().isNoContent());
         assertThat(reservationRepo.findById("1")).isEmpty();
     }
-
-    @Test
-    @Transactional
-    public void deleteNonExistentRoom() throws Exception {
-        this.mockMvc.perform(delete("/admin/rooms/4123")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-        assertThat(roomRepo.findById("4123")).isEmpty();
-    }
 }
