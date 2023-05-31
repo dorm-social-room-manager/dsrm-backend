@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +33,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         return roomTypeRepo.findAll(pageable);
     }
 
+    @Transactional
     @Override
     public void deleteRoomType(String id) {
         roomTypeRepo.deleteById(id);
