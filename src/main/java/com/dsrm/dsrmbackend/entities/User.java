@@ -28,10 +28,12 @@ public class User {
     private Set<Role> roles;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
     private Set<Reservation> reservations;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "keyOwner")
+    private Set<Room> rooms;
 
     @PreRemove
     private void preRemove() {
-        reservations.forEach( child -> child.setRoom(null));
+        rooms.forEach(child -> child.setKeyOwner(null));
     }
 
 }

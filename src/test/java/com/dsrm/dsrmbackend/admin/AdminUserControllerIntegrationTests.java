@@ -3,7 +3,6 @@ package com.dsrm.dsrmbackend.admin;
 import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
-import com.dsrm.dsrmbackend.entities.Reservation;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
@@ -185,8 +184,8 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
     void deleteValidUser() throws Exception{
         this.mockMvc.perform(delete("/admin/users/2").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-        Optional<Reservation> reservation = reservationRepo.findById("2");
-        Assertions.assertTrue(reservation.isEmpty());
+        assertFalse(userRepo.existsById("2"));
+        assertFalse(reservationRepo.existsById("2"));
     }
 
 
