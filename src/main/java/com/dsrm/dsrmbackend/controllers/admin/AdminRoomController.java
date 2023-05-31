@@ -16,7 +16,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 
-
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -45,5 +44,12 @@ public class AdminRoomController {
                 .buildAndExpand(room.getId()).toUri();
 
         return ResponseEntity.status(HttpStatus.OK).location(location).build();
+    }
+
+    @DeleteMapping(value="/rooms/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable String id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.noContent().build();
+
     }
 }
