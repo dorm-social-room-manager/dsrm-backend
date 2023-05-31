@@ -1,7 +1,9 @@
 package com.dsrm.dsrmbackend.controllers.admin;
 
 import com.dsrm.dsrmbackend.dto.ReservationRequestDTO;
+import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import com.dsrm.dsrmbackend.entities.Reservation;
+import com.dsrm.dsrmbackend.entities.Room;
 import com.dsrm.dsrmbackend.mappers.ReservationMapper;
 import com.dsrm.dsrmbackend.services.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +39,15 @@ public class AdminReservationController {
         reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(value = "/reservations/{id}")
+    public ResponseEntity<Void> updateReservation(@RequestBody ReservationRequestDTO reservationRequestDTO, @PathVariable String id) {
+        Reservation reservation = reservationService.updateReservation(reservationRequestDTO, id);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .buildAndExpand(reservation.getId()).toUri();
+        return ResponseEntity.status(HttpStatus.OK).location(location).build();
+    }
+
 }

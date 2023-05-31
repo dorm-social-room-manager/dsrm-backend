@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity(name = "rooms")
 @Getter
@@ -36,4 +37,7 @@ public class Room {
     private LocalDate unavailableStart;
     @Column(name = "unavailable_end")
     private LocalDate unavailableEnd;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    private List<Reservation> reservationList;
 }

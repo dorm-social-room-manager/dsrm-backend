@@ -52,4 +52,9 @@ public class RoomServiceImpl implements RoomService {
 
         return roomRepo.save(newRoom);
     }
+
+    @Override
+    public void deleteRoom(String id) {
+        roomRepo.deleteById(id);
+    }
 }

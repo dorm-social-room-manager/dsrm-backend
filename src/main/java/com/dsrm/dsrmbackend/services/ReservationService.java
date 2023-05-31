@@ -18,5 +18,9 @@ public interface ReservationService {
 
     Page<Reservation> getReservations(Pageable pageable, String userId);
 
+
     void deleteReservation(String id);
+
+    Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String roomId);
+
 }

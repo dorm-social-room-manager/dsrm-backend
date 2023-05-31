@@ -3,6 +3,7 @@ package com.dsrm.dsrmbackend.admin;
 import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import com.dsrm.dsrmbackend.entities.Room;
+import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.RoomRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -24,9 +25,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,6 +46,9 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
 
     @Autowired
     RoomRepo roomRepo;
+
+    @Autowired
+    ReservationRepo reservationRepo;
 
     @Test
     @Transactional
@@ -179,5 +182,15 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         assertEquals(22, room.getMaxCapacity());
         assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
         assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
+    }
+
+    @Test
+    @Transactional
+    public void deleteExistentRoom() throws Exception {
+        this.mockMvc.perform(delete("/admin/rooms/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        assertFalse(reservationRepo.existsById("1"));
+        assertFalse(roomRepo.existsById("1"));
     }
 }
