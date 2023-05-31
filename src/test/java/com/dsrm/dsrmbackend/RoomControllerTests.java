@@ -43,6 +43,7 @@ public class RoomControllerTests extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roomNumber").value(111))
                 .andExpect(jsonPath("$.floor").value(1))
+                .andExpect(jsonPath("$.roomType.name").value("Pokoj mieszkalny"))
                 .andExpect(jsonPath("$.maxCapacity").value(2))
                 .andExpect(jsonPath("$.openingTime").value("12:00:00"))
                 .andExpect(jsonPath("$.closingTime").value("23:00:00"))
