@@ -3,14 +3,19 @@ package com.dsrm.dsrmbackend.controllers.admin;
 
 import com.dsrm.dsrmbackend.dto.RoomTypeRequestDTO;
 import com.dsrm.dsrmbackend.entities.RoomType;
-import com.dsrm.dsrmbackend.mappers.RoomTypeMapper;
 import com.dsrm.dsrmbackend.services.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -22,7 +27,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class AdminRoomTypeController {
     private final RoomTypeService roomTypeService;
-    private final RoomTypeMapper roomTypeMapper;
 
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,5 +38,11 @@ public class AdminRoomTypeController {
                 .path("/{id}")
                 .buildAndExpand(roomType.getId()).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping(value="/room-types/{id}")
+    public ResponseEntity<Void> deleteRoomType(@PathVariable String id) {
+        roomTypeService.deleteRoomType(id);
+        return ResponseEntity.noContent().build();
     }
 }

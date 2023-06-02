@@ -1,6 +1,5 @@
 package com.dsrm.dsrmbackend.dto;
 
-import com.dsrm.dsrmbackend.entities.RoomType;
 import com.dsrm.dsrmbackend.entities.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +14,7 @@ import java.time.LocalTime;
 public class RoomDTO {
     private Integer roomNumber;
     private Integer floor;
-    private RoomType roomType;
+    private RoomTypeDTO roomType;
     private Integer maxCapacity;
     private User keyOwner;
     @JsonFormat(pattern="HH:mm:ss", shape = JsonFormat.Shape.STRING)

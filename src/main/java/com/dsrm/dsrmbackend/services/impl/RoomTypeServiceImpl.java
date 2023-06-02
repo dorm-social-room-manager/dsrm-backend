@@ -10,25 +10,32 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class RoomTypeServiceImpl implements RoomTypeService {
-    private final RoomTypeRepo repository;
+    private final RoomTypeRepo roomTypeRepo;
     private final RoomTypeMapper roomTypeMapper;
     public RoomType addRoomType(RoomTypeRequestDTO roomTypeReqDto) {
         RoomType roomType = roomTypeMapper.roomTypeReqDTOToRoomType(roomTypeReqDto);
         roomType.setId(UUID.randomUUID().toString());
-        return repository.save(roomType);
+        return roomTypeRepo.save(roomType);
     }
 
     public Optional<RoomType> getRoomType(String roomId) {
-        return repository.findById(roomId);
+        return roomTypeRepo.findById(roomId);
     }
 
     public Page<RoomType> getRoomTypes(Pageable pageable) {
-        return repository.findAll(pageable);
+        return roomTypeRepo.findAll(pageable);
+    }
+
+    @Transactional
+    @Override
+    public void deleteRoomType(String id) {
+        roomTypeRepo.deleteById(id);
     }
 }

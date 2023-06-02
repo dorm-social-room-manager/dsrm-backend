@@ -12,5 +12,7 @@ public interface RoomTypeService {
     Optional<RoomType> getRoomType(String roomId);
 
     Page<RoomType> getRoomTypes(Pageable pageable);
+
+    void deleteRoomType(String id);
 }
 
