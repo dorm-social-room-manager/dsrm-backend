@@ -16,7 +16,7 @@ public class RoomDTO {
     private Integer floor;
     private RoomTypeDTO roomType;
     private Integer maxCapacity;
-    private User keyOwner;
+    private UserDTO keyOwner;
     @JsonFormat(pattern="HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Schema(type="string", pattern = "HH:mm:ss")
     private LocalTime openingTime;

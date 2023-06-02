@@ -34,6 +34,11 @@ public class AdminReservationController {
                 .buildAndExpand(reservation.getId()).toUri();
         return ResponseEntity.created(location).build();
     }
+    @DeleteMapping(value = "reservations/{id}")
+    ResponseEntity<Void> deleteReservation(@PathVariable String id){
+        reservationService.deleteReservation(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/reservations/{id}")

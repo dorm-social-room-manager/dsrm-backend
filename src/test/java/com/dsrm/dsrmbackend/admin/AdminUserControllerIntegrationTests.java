@@ -4,6 +4,7 @@ import com.dsrm.dsrmbackend.AbstractIntegrationTest;
 import com.dsrm.dsrmbackend.dto.UserRequestDTO;
 import com.dsrm.dsrmbackend.dto.UserRolesOnlyDTO;
 import com.dsrm.dsrmbackend.entities.User;
+import com.dsrm.dsrmbackend.repositories.ReservationRepo;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
@@ -49,6 +50,8 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private ReservationRepo  reservationRepo;
 
     @Test
     void retrieveNonExistingUser() throws Exception {
@@ -175,5 +178,15 @@ class AdminUserControllerIntegrationTests extends  AbstractIntegrationTest{
                         "surname must not be blank",
                         "roomNumber must not be null"))));
     }
+
+    @Test
+    @Transactional
+    void deleteValidUser() throws Exception{
+        this.mockMvc.perform(delete("/admin/users/2").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        assertFalse(userRepo.existsById("2"));
+        assertFalse(reservationRepo.existsById("2"));
+    }
+
 
 }

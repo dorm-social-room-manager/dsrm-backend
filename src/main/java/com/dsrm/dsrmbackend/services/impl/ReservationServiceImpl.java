@@ -48,9 +48,15 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public void deleteReservation(String id) {
+        reservationRepo.deleteById(id);
+    }
+
+    @Override
     public Reservation updateReservation(ReservationRequestDTO reservationRequestDTO, String id) {
         Reservation newReservation = reservationMapper.toReservation(reservationRequestDTO);
         newReservation.setId(id);
         return reservationRepo.save(newReservation);
     }
+
 }

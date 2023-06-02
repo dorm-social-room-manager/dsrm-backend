@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepo roleRepo;
 
+
     @Override
     public User addUser(UserRequestDTO userRequestDTO){
         User user = userMapper.toUser(userRequestDTO);
@@ -70,6 +71,11 @@ public class UserServiceImpl implements UserService {
             );
         }
         return userRepo.findAll(userSpecification, pageable);
+    }
+
+    @Override
+    public void deleteUser(String id) {
+        userRepo.deleteById(id);
     }
 
 }

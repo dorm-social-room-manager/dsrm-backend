@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Optional;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -93,6 +93,16 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
 
     @Test
     @Transactional
+    void deleteValidReservation() throws Exception{
+        this.mockMvc.perform(delete("/admin/reservations/1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        assertFalse(reservationRepo.existsById("1"));
+
+    }
+
+
+    @Test
+    @Transactional
     void updateValidReservation() throws Exception {
         LocalDateTime from,to;
         from = LocalDateTime.parse("2023-05-21T12:20:00");
@@ -146,5 +156,6 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         assertEquals(from, reservation1.getStartTime());
         assertEquals(to, reservation1.getEndTime());
     }
+
 
 }
