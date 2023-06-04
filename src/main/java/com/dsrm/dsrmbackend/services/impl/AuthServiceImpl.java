@@ -6,6 +6,7 @@ import com.dsrm.dsrmbackend.entities.Role;
 import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.AuthService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -62,6 +63,29 @@ public class AuthServiceImpl implements AuthService {
         User user = resUser.orElseThrow(() -> new CredentialException("User does not exist"));
         if(!user.getPassword().equals(loginDetails.getPassword())) {
             throw new CredentialException("Bad password");
+        }
+        String accessToken = generateAccessToken(user);
+        String refreshToken = generateRefreshToken(user);
+        return new JwtResponse(accessToken, refreshToken);
+    }
+
+    @Override
+    public JwtResponse refreshTokens(String jwtToken) throws CredentialException {
+        Claims claims;
+        try {
+            claims = (Claims) Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parse(jwtToken)
+                    .getBody();
+        } catch (Exception e) {
+            throw new CredentialException("Invalid token");
+        }
+        String username = claims.get("username", String.class);
+        Optional<User> resUser = userRepo.findByEmail(username);
+        User user = resUser.orElseThrow(() -> new CredentialException("User does not exist"));
+        if (claims.getExpiration() == null || claims.getExpiration().before(new Date())) {
+            throw new CredentialException("Token expired");
         }
         String accessToken = generateAccessToken(user);
         String refreshToken = generateRefreshToken(user);
