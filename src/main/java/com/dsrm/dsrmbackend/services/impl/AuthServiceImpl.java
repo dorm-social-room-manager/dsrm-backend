@@ -41,17 +41,17 @@ public class AuthServiceImpl implements AuthService {
 
     private String generateAccessToken(User user) {
         return Jwts.builder().setSubject(user.getEmail()).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .setClaims(Map.of("username", user.getEmail()))
                 .addClaims(Map.of("roles", user.getRoles().stream().map(Role::getName).toList()))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(this.getSigningKey())
                 .compact();
     }
 
     private String generateRefreshToken(User user) {
         return Jwts.builder().setSubject(user.getEmail()).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtRefreshExpirationMs))
                 .setClaims(Map.of("username", user.getEmail()))
+                .setExpiration(new Date((new Date()).getTime() + jwtRefreshExpirationMs))
                 .signWith(this.getSigningKey())
                 .compact();
     }
