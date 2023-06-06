@@ -3,9 +3,11 @@ package com.dsrm.dsrmbackend.services.impl;
 import com.dsrm.dsrmbackend.dto.RoomRequestDTO;
 import com.dsrm.dsrmbackend.entities.Room;
 import com.dsrm.dsrmbackend.entities.RoomType;
+import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.mappers.RoomMapper;
 import com.dsrm.dsrmbackend.repositories.RoomRepo;
 import com.dsrm.dsrmbackend.repositories.RoomTypeRepo;
+import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepo roomRepo;
     private final RoomTypeRepo roomTypeRepo;
     private final RoomMapper roomMapper;
+    private final UserRepo userRepo;
     public Room addRoom(RoomRequestDTO roomDto) {
         Room room = roomMapper.roomReqDTOToRoom(roomDto);
         room.setId(UUID.randomUUID().toString());
@@ -28,6 +31,10 @@ public class RoomServiceImpl implements RoomService {
         if (roomDto.getType() != null) {
             RoomType roomType = roomTypeRepo.getReferenceById(roomDto.getType());
             room.setRoomType(roomType);
+        }
+        if (roomDto.getKeyOwner() != null) {
+            User user = userRepo.getReferenceById(roomDto.getKeyOwner());
+            room.setKeyOwner(user);
         }
         return roomRepo.save(room);
     }
