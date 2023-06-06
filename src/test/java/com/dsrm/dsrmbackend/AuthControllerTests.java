@@ -1,8 +1,12 @@
 package com.dsrm.dsrmbackend;
 
+import com.dsrm.dsrmbackend.dto.JwtResponse;
 import com.dsrm.dsrmbackend.dto.LoginDetailsRequestDTO;
+import com.dsrm.dsrmbackend.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.security.auth.login.CredentialException;
 import java.util.Base64;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -35,6 +41,9 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    AuthService authService;
 
     @Test
     public void authorizeWrongUser() throws Exception {
@@ -81,6 +90,143 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         tokenPayload = new String(decoder.decode(refreshToken[1]));
         username = JsonPath.read(tokenPayload, "$.username");
         assertEquals("test01@wp.pl", username);
+    }
 
+    @Test
+    public void refreshValidToken() throws Exception {
+        LoginDetailsRequestDTO userdata = new LoginDetailsRequestDTO();
+        userdata.setUsername("test01@wp.pl");
+        userdata.setPassword("zaq1@WSX");
+
+        JwtResponse tokens = authService.authenticateUser(userdata);
+
+        String refreshToken = tokens.getRefreshToken();
+        MvcResult refreshResult = this.mockMvc.perform(put("/refresh")
+                        .header("Authorization", refreshToken))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String accessToken = JsonPath.read(refreshResult.getResponse().getContentAsString(), "$.accessToken").toString();
+        refreshToken = JsonPath.read(refreshResult.getResponse().getContentAsString(), "$.refreshToken").toString();
+
+        Claims claims;
+        try {
+            claims = (Claims) Jwts.parserBuilder()
+                    .setSigningKey(authService.getSigningKey())
+                    .build()
+                    .parse(accessToken)
+                    .getBody();
+        } catch (Exception e) {
+            throw new CredentialException("Invalid token");
+        }
+        assertEquals(claims.get("username"), userdata.getUsername());
+
+        try {
+            claims = (Claims) Jwts.parserBuilder()
+                    .setSigningKey(authService.getSigningKey())
+                    .build()
+                    .parse(refreshToken)
+                    .getBody();
+        } catch (Exception e) {
+            throw new CredentialException("Invalid token");
+        }
+        assertEquals(claims.get("username"), userdata.getUsername());
+    }
+
+    @Test
+    public void refreshTokenWithInvalidUsername() throws Exception {
+        LoginDetailsRequestDTO userdata = new LoginDetailsRequestDTO();
+        userdata.setUsername("test01@wp.pl");
+        userdata.setPassword("zaq1@WSX");
+
+        JwtResponse tokens = authService.authenticateUser(userdata);
+        Claims claims;
+        try {
+            claims = (Claims) Jwts.parserBuilder()
+                    .setSigningKey(authService.getSigningKey())
+                    .build()
+                    .parse(tokens.getRefreshToken())
+                    .getBody();
+        } catch (Exception e) {
+            throw new CredentialException("Invalid token");
+        }
+        claims.remove("username");
+
+        String invalidRefreshToken = Jwts.builder()
+                .setClaims(claims)
+                .signWith(authService.getSigningKey())
+                .compact();
+
+        this.mockMvc.perform(put("/refresh")
+                        .header("Authorization", invalidRefreshToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(("$")).value("User does not exist"));
+    }
+
+    @Test
+    public void refreshTokenWithExpiredToken() throws Exception {
+        LoginDetailsRequestDTO userdata = new LoginDetailsRequestDTO();
+        userdata.setUsername("test01@wp.pl");
+        userdata.setPassword("zaq1@WSX");
+
+        JwtResponse tokens = authService.authenticateUser(userdata);
+        Claims claims;
+        try {
+            claims = (Claims) Jwts.parserBuilder()
+                    .setSigningKey(authService.getSigningKey())
+                    .build()
+                    .parse(tokens.getRefreshToken())
+                    .getBody();
+        } catch (Exception e) {
+            throw new CredentialException("Invalid token");
+        }
+        claims.setExpiration(new Date(System.currentTimeMillis() - 3600));
+
+        String invalidRefreshToken = Jwts.builder()
+                .setClaims(claims)
+                .signWith(authService.getSigningKey())
+                .compact();
+
+        this.mockMvc.perform(put("/refresh")
+                        .header("Authorization", invalidRefreshToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(("$")).value("Token expired"));
+    }
+
+    @Test
+    public void refreshTokenWithoutExpiration() throws Exception {
+        LoginDetailsRequestDTO userdata = new LoginDetailsRequestDTO();
+        userdata.setUsername("test01@wp.pl");
+        userdata.setPassword("zaq1@WSX");
+
+        JwtResponse tokens = authService.authenticateUser(userdata);
+        Claims claims;
+        try {
+            claims = (Claims) Jwts.parserBuilder()
+                    .setSigningKey(authService.getSigningKey())
+                    .build()
+                    .parse(tokens.getRefreshToken())
+                    .getBody();
+        } catch (Exception e) {
+            throw new CredentialException("Invalid token");
+        }
+        claims.setExpiration(null);
+
+        String invalidRefreshToken = Jwts.builder()
+                .setClaims(claims)
+                .signWith(authService.getSigningKey())
+                .compact();
+
+        this.mockMvc.perform(put("/refresh")
+                        .header("Authorization", invalidRefreshToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(("$")).value("No expiration date"));
+    }
+
+    @Test
+    public void refreshEmptyToken() throws Exception {
+        this.mockMvc.perform(put("/refresh"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(("$")).value("Missing header: Authorization"));
     }
 }
