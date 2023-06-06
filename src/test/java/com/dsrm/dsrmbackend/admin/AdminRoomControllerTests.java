@@ -58,6 +58,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         roomRequest.setName("test");
         roomRequest.setNumber(203);
         roomRequest.setFloor(2);
+        roomRequest.setKeyOwner("2");
         roomRequest.setType(String.valueOf(2L));
         roomRequest.setMaxCapacity(3);
         roomRequest.setOpeningTime(time);
@@ -89,6 +90,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         room.setName("");
         room.setNumber(203);
         room.setFloor(2);
+        room.setKeyOwner("1");
         room.setType(String.valueOf(2L));
         room.setMaxCapacity(3);
         room.setOpeningTime(time);
@@ -106,6 +108,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         RoomRequestDTO room = new RoomRequestDTO();
         room.setName("");
         room.setNumber(null);
+        room.setKeyOwner(null);
         room.setFloor(null);
         room.setType(null);
         room.setMaxCapacity(null);
@@ -118,6 +121,8 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect((jsonPath("$", Matchers.containsInAnyOrder("name must not be blank",
                         "number must not be null",
+                        "keyOwner must not be null",
+                        "type must not be null",
                         "maxCapacity must not be null",
                         "floor must not be null",
                         "openingTime must not be null",
