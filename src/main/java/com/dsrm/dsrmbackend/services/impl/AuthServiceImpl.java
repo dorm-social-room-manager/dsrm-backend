@@ -7,6 +7,7 @@ import com.dsrm.dsrmbackend.entities.User;
 import com.dsrm.dsrmbackend.repositories.UserRepo;
 import com.dsrm.dsrmbackend.services.AuthService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -35,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepo userRepo;
 
-    private Key getSigningKey() {
+    public Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(this.secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -78,14 +79,16 @@ public class AuthServiceImpl implements AuthService {
                     .build()
                     .parse(jwtToken)
                     .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new CredentialException("Token expired");
         } catch (Exception e) {
             throw new CredentialException("Invalid token");
         }
         String username = claims.get("username", String.class);
         Optional<User> resUser = userRepo.findByEmail(username);
         User user = resUser.orElseThrow(() -> new CredentialException("User does not exist"));
-        if (claims.getExpiration() == null || claims.getExpiration().before(new Date())) {
-            throw new CredentialException("Token expired");
+        if (claims.getExpiration() == null) {
+            throw new CredentialException("No expiration date");
         }
         String accessToken = generateAccessToken(user);
         String refreshToken = generateRefreshToken(user);
