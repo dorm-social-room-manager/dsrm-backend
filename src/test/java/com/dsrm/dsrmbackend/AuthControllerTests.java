@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.security.auth.login.CredentialException;
 import java.util.Base64;
 import java.util.Date;
 
@@ -109,27 +108,20 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         String accessToken = JsonPath.read(refreshResult.getResponse().getContentAsString(), "$.accessToken").toString();
         refreshToken = JsonPath.read(refreshResult.getResponse().getContentAsString(), "$.refreshToken").toString();
 
-        Claims claims;
-        try {
-            claims = (Claims) Jwts.parserBuilder()
-                    .setSigningKey(authService.getSigningKey())
-                    .build()
-                    .parse(accessToken)
-                    .getBody();
-        } catch (Exception e) {
-            throw new CredentialException("Invalid token");
-        }
+        Claims claims = (Claims) Jwts.parserBuilder()
+                .setSigningKey(authService.getSigningKey())
+                .build()
+                .parse(accessToken)
+                .getBody();
+
         assertEquals(claims.get("username"), userdata.getUsername());
 
-        try {
-            claims = (Claims) Jwts.parserBuilder()
-                    .setSigningKey(authService.getSigningKey())
-                    .build()
-                    .parse(refreshToken)
-                    .getBody();
-        } catch (Exception e) {
-            throw new CredentialException("Invalid token");
-        }
+        claims = (Claims) Jwts.parserBuilder()
+                .setSigningKey(authService.getSigningKey())
+                .build()
+                .parse(refreshToken)
+                .getBody();
+
         assertEquals(claims.get("username"), userdata.getUsername());
     }
 
@@ -140,16 +132,12 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         userdata.setPassword("zaq1@WSX");
 
         JwtResponse tokens = authService.authenticateUser(userdata);
-        Claims claims;
-        try {
-            claims = (Claims) Jwts.parserBuilder()
-                    .setSigningKey(authService.getSigningKey())
-                    .build()
-                    .parse(tokens.getRefreshToken())
-                    .getBody();
-        } catch (Exception e) {
-            throw new CredentialException("Invalid token");
-        }
+        Claims claims = (Claims) Jwts.parserBuilder()
+                .setSigningKey(authService.getSigningKey())
+                .build()
+                .parse(tokens.getRefreshToken())
+                .getBody();
+
         claims.remove("username");
 
         String invalidRefreshToken = Jwts.builder()
@@ -170,16 +158,12 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         userdata.setPassword("zaq1@WSX");
 
         JwtResponse tokens = authService.authenticateUser(userdata);
-        Claims claims;
-        try {
-            claims = (Claims) Jwts.parserBuilder()
-                    .setSigningKey(authService.getSigningKey())
-                    .build()
-                    .parse(tokens.getRefreshToken())
-                    .getBody();
-        } catch (Exception e) {
-            throw new CredentialException("Invalid token");
-        }
+        Claims claims = (Claims) Jwts.parserBuilder()
+                .setSigningKey(authService.getSigningKey())
+                .build()
+                .parse(tokens.getRefreshToken())
+                .getBody();
+
         claims.setExpiration(new Date(System.currentTimeMillis() - 3600));
 
         String invalidRefreshToken = Jwts.builder()
@@ -200,16 +184,12 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         userdata.setPassword("zaq1@WSX");
 
         JwtResponse tokens = authService.authenticateUser(userdata);
-        Claims claims;
-        try {
-            claims = (Claims) Jwts.parserBuilder()
-                    .setSigningKey(authService.getSigningKey())
-                    .build()
-                    .parse(tokens.getRefreshToken())
-                    .getBody();
-        } catch (Exception e) {
-            throw new CredentialException("Invalid token");
-        }
+        Claims claims = (Claims) Jwts.parserBuilder()
+                .setSigningKey(authService.getSigningKey())
+                .build()
+                .parse(tokens.getRefreshToken())
+                .getBody();
+
         claims.setExpiration(null);
 
         String invalidRefreshToken = Jwts.builder()
