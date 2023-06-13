@@ -2,6 +2,7 @@ package com.dsrm.dsrmbackend;
 
 import com.dsrm.dsrmbackend.dto.JwtResponse;
 import com.dsrm.dsrmbackend.dto.LoginDetailsRequestDTO;
+import com.dsrm.dsrmbackend.properties.JwtProperties;
 import com.dsrm.dsrmbackend.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -43,6 +44,9 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
     @Autowired
     AuthService authService;
+
+    @Autowired
+    JwtProperties jwtProperties;
 
     @Test
     public void authorizeWrongUser() throws Exception {
@@ -109,7 +113,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         refreshToken = JsonPath.read(refreshResult.getResponse().getContentAsString(), "$.refreshToken").toString();
 
         Claims claims = (Claims) Jwts.parserBuilder()
-                .setSigningKey(authService.getSigningKey())
+                .setSigningKey(jwtProperties.getSecretKey())
                 .build()
                 .parse(accessToken)
                 .getBody();
@@ -117,7 +121,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
         assertEquals(claims.get("username"), userdata.getUsername());
 
         claims = (Claims) Jwts.parserBuilder()
-                .setSigningKey(authService.getSigningKey())
+                .setSigningKey(jwtProperties.getSecretKey())
                 .build()
                 .parse(refreshToken)
                 .getBody();
@@ -133,7 +137,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
         JwtResponse tokens = authService.authenticateUser(userdata);
         Claims claims = (Claims) Jwts.parserBuilder()
-                .setSigningKey(authService.getSigningKey())
+                .setSigningKey(jwtProperties.getSecretKey())
                 .build()
                 .parse(tokens.getRefreshToken())
                 .getBody();
@@ -142,7 +146,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
         String invalidRefreshToken = Jwts.builder()
                 .setClaims(claims)
-                .signWith(authService.getSigningKey())
+                .signWith(jwtProperties.getSecretKey())
                 .compact();
 
         this.mockMvc.perform(put("/refresh")
@@ -159,7 +163,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
         JwtResponse tokens = authService.authenticateUser(userdata);
         Claims claims = (Claims) Jwts.parserBuilder()
-                .setSigningKey(authService.getSigningKey())
+                .setSigningKey(jwtProperties.getSecretKey())
                 .build()
                 .parse(tokens.getRefreshToken())
                 .getBody();
@@ -168,7 +172,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
         String invalidRefreshToken = Jwts.builder()
                 .setClaims(claims)
-                .signWith(authService.getSigningKey())
+                .signWith(jwtProperties.getSecretKey())
                 .compact();
 
         this.mockMvc.perform(put("/refresh")
@@ -185,7 +189,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
         JwtResponse tokens = authService.authenticateUser(userdata);
         Claims claims = (Claims) Jwts.parserBuilder()
-                .setSigningKey(authService.getSigningKey())
+                .setSigningKey(jwtProperties.getSecretKey())
                 .build()
                 .parse(tokens.getRefreshToken())
                 .getBody();
@@ -194,7 +198,7 @@ public class AuthControllerTests extends AbstractIntegrationTest {
 
         String invalidRefreshToken = Jwts.builder()
                 .setClaims(claims)
-                .signWith(authService.getSigningKey())
+                .signWith(jwtProperties.getSecretKey())
                 .compact();
 
         this.mockMvc.perform(put("/refresh")

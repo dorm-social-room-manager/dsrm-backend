@@ -4,11 +4,8 @@ import com.dsrm.dsrmbackend.dto.JwtResponse;
 import com.dsrm.dsrmbackend.dto.LoginDetailsRequestDTO;
 
 import javax.security.auth.login.CredentialException;
-import java.security.Key;
 
 public interface AuthService {
-
-    Key getSigningKey();
 
     JwtResponse authenticateUser(LoginDetailsRequestDTO loginDetails) throws CredentialException;
 
