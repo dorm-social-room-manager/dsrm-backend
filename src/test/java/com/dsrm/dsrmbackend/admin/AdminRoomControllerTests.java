@@ -119,7 +119,8 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(room)))
                 .andExpect(status().isBadRequest())
-                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("name must not be blank",
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder(
+                        "name must not be blank",
                         "number must not be null",
                         "keyOwner must not be null",
                         "type must not be null",
@@ -157,6 +158,34 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         assertEquals(22, room.getMaxCapacity());
         assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
         assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
+    }
+
+    @Test
+    @Transactional
+    public void updateValidRoomWithInvalidData() throws Exception {
+        RoomRequestDTO updateRoom = new RoomRequestDTO();
+        updateRoom.setName("");
+        updateRoom.setNumber(null);
+        updateRoom.setFloor(null);
+        updateRoom.setType(null);
+        updateRoom.setKeyOwner(null);
+        updateRoom.setMaxCapacity(null);
+        updateRoom.setOpeningTime(null);
+        updateRoom.setClosingTime(null);
+
+        this.mockMvc.perform(put("/admin/rooms/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRoom)))
+                .andExpect(status().isBadRequest())
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder(
+                        "name must not be blank",
+                        "number must not be null",
+                        "keyOwner must not be null",
+                        "type must not be null",
+                        "maxCapacity must not be null",
+                        "floor must not be null",
+                        "openingTime must not be null",
+                        "closingTime must not be null"))));
     }
 
     @Test
