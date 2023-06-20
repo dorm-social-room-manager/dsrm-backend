@@ -10,7 +10,7 @@ import java.security.Key
 @Component
 @ConfigurationPropertiesBinding
 class SigningKeyConverter : Converter<String, Key>{
-    override fun convert(source: String): Key? {
+    override fun convert(source: String): Key {
         val keyBytes = Decoders.BASE64.decode(source)
         return Keys.hmacShaKeyFor(keyBytes)
     }
