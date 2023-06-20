@@ -139,6 +139,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         updateRoom.setFloor(2);
         updateRoom.setType(String.valueOf(2L));
         updateRoom.setMaxCapacity(22);
+        updateRoom.setKeyOwner("2");
         updateRoom.setOpeningTime(LocalTime.parse("12:00:00"));
         updateRoom.setClosingTime(LocalTime.parse("22:00:00"));
 
@@ -155,6 +156,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         assertEquals(202, room.getRoomNumber());
         assertEquals(2, room.getFloor());
         assertEquals("2", room.getRoomType().getId());
+        assertEquals("2", room.getKeyOwner().getId());
         assertEquals(22, room.getMaxCapacity());
         assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
         assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
@@ -197,6 +199,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         updateRoom.setFloor(2);
         updateRoom.setType(String.valueOf(2L));
         updateRoom.setMaxCapacity(22);
+        updateRoom.setKeyOwner("1");
         updateRoom.setOpeningTime(LocalTime.parse("12:00:00"));
         updateRoom.setClosingTime(LocalTime.parse("22:00:00"));
 
@@ -213,6 +216,7 @@ public class AdminRoomControllerTests extends AbstractIntegrationTest {
         assertEquals(202, room.getRoomNumber());
         assertEquals(2, room.getFloor());
         assertEquals("2", room.getRoomType().getId());
+        assertEquals("1", room.getKeyOwner().getId());
         assertEquals(22, room.getMaxCapacity());
         assertEquals(LocalTime.parse("12:00:00"), room.getOpeningTime());
         assertEquals(LocalTime.parse("22:00:00"), room.getClosingTime());
