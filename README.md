@@ -61,8 +61,9 @@ to application.properties
 There are two authentication properties that can be overridden:
  - `dsrm.auth.jwt.ExpirationMs`
  - `dsrm.auth.jwt.RefreshExpirationMs`
+ - `dsrm.auth.jwt.SecretKey`
 
 `dsrm.auth.jwt.ExpirationMs` specifies login token expiration time in miliseconds. Default: 3600000
 `dsrm.auth.jwt.RefreshExpirationMs` specifies refresh token expiration time in miliseconds. Default: 86400000
-
+`dsrm.auth.jwt.SecretKey` stores key represented as String. 
 

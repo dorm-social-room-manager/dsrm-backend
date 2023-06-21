@@ -22,4 +22,10 @@ public class AuthController {
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginDetailsRequestDTO loginDetails) throws CredentialException {
         return ResponseEntity.ok(authService.authenticateUser(loginDetails));
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(value = "/refresh")
+    public ResponseEntity<JwtResponse> refreshTokens(@RequestHeader("Authorization") String refreshToken) throws CredentialException {
+        return ResponseEntity.ok(authService.refreshTokens(refreshToken));
+    }
 }

@@ -8,4 +8,6 @@ import javax.security.auth.login.CredentialException;
 public interface AuthService {
 
     JwtResponse authenticateUser(LoginDetailsRequestDTO loginDetails) throws CredentialException;
+
+    JwtResponse refreshTokens(String refreshToken) throws CredentialException;
 }
