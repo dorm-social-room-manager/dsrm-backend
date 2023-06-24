@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -14,19 +15,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests()
-                    .antMatchers(
-                            "/v3/api-docs/**",
-                            "/configuration/**",
-                            "/swagger*/**",
-                            "/webjars/**",
-                            "/actuator/**",
-                            "/authenticate"
-                    ).permitAll()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().hasRole("USER")
-                    .and()
-                    .oauth2ResourceServer().jwt();
+        http.authorizeRequests()
+                .antMatchers(
+                        "/v3/api-docs/**",
+                        "/configuration/**",
+                        "/swagger*/**",
+                        "/webjars/**",
+                        "/actuator/**",
+                        "/authenticate"
+                ).permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().hasRole("USER")
+                .and()
+                .oauth2ResourceServer().jwt();
     }
 
     @Override

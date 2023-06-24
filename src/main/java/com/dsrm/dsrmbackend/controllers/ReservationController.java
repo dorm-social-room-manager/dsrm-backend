@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.dsrm.dsrmbackend.dto.ReservationDTO;
 import com.dsrm.dsrmbackend.services.ReservationService;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('USER')")
 public class ReservationController {
 
     private final ReservationService reservationService;
