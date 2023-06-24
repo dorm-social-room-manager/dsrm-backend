@@ -2,13 +2,13 @@ INSERT INTO room_types VALUES (1, 'Pokoj mieszkalny');
 INSERT INTO room_types VALUES (2, 'Sala telewizyjna');
 INSERT INTO room_types VALUES (3, 'Silownia');
 INSERT INTO users(id, email, password, name, surname, room_number, ban_end)
-VALUES (1, 'test01@wp.pl', 'zaq1@WSX', 'Jan', 'Kowalski', 111, null);
+VALUES (1, 'test01@wp.pl', '$2a$10$2K6lXuEVKcm10o.rdt.Y.O4Jto5.QGFeliGx2RLU0pfp82bqHhBFS', 'Jan', 'Kowalski', 111, null);
 
 INSERT INTO users(id, email, password, name, surname, room_number, ban_end)
-VALUES (2, 'test02@wp.pl', 'zaq1@WSX', 'Piotr', 'Nowak', 112, str_to_date('02-02-2023', '%d-%m-%Y'));
+VALUES (2, 'test02@wp.pl', '$2a$10$CY4QLqlC.EbUXC37GKkQe..cGfprOEjUprT5EZvYnU2WuRg44B/Q.', 'Piotr', 'Nowak', 112, str_to_date('02-02-2023', '%d-%m-%Y'));
 
 INSERT INTO users(id, email, password, name, surname, room_number, ban_end)
-VALUES (3, 'test03@wp.pl', 'zaq1@WSX', 'Stefan', 'Grabowski', 111, null);
+VALUES (3, 'test03@wp.pl', '$2a$10$MXlOV6auIzKB6GTzcpRZsu7yoBybFpX8OP4pQY.Y.NhjUBGIqZl76', 'Stefan', 'Grabowski', 111, null);
 
 INSERT INTO rooms(id, room_number, floor, type_id, max_capacity, key_owner_id, opening_time, closing_time, unavailable_start, unavailable_end)
 VALUES (1, 111, 1, 1, 2, 1, (120000), (230000), null, null);
