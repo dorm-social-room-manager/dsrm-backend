@@ -11,6 +11,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.CredentialException;
@@ -47,7 +49,8 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponse authenticateUser(LoginDetailsRequestDTO loginDetails) throws CredentialException {
         Optional<User> resUser = userRepo.findByEmail(loginDetails.getUsername());
         User user = resUser.orElseThrow(() -> new CredentialException("User does not exist"));
-        if(!user.getPassword().equals(loginDetails.getPassword())) {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        if(!encoder.matches(loginDetails.getPassword(), user.getPassword())) {
             throw new CredentialException("Bad password");
         }
         String accessToken = generateAccessToken(user);
