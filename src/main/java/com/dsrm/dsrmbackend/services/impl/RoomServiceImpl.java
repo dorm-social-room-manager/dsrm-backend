@@ -50,10 +50,13 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room updateRoom(RoomRequestDTO update, String roomId) {
         Room newRoom = roomMapper.roomReqDTOToRoom(update);
-        newRoom.setRoomType(null);
         if (update.getType() != null) {
             RoomType roomType = roomTypeRepo.getReferenceById(update.getType());
             newRoom.setRoomType(roomType);
+        }
+        if (update.getKeyOwner() != null) {
+            User user = userRepo.getReferenceById(update.getKeyOwner());
+            newRoom.setKeyOwner(user);
         }
         newRoom.setId(roomId);
 
