@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -52,14 +53,14 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Test
     @Transactional
     void addValidReservation() throws Exception {
-        Map<String,Object> body = new HashMap<>();
-        body.put("room",1);
-        body.put("from","2023-02-21 12:20:00");
-        body.put("to","2023-02-22 13:20:00");
-        body.put("user",2);
+        ReservationRequestDTO reservationRequestDTO  = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom("1");
+        reservationRequestDTO.setFrom(LocalDateTime.parse("2023-07-21T12:20:00"));
+        reservationRequestDTO.setTo(LocalDateTime.parse("2023-07-22T13:20:00"));
+        reservationRequestDTO.setUser("1");
         MvcResult result = this.mockMvc.perform(post("/admin/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString((body))))
+                        .content(objectMapper.writeValueAsString((reservationRequestDTO))))
                         .andExpect(status().isCreated())
                 .andReturn();
         String reservationId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
@@ -68,9 +69,9 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         assertTrue(resReservation.isPresent());
         Reservation reservation = resReservation.get();
         assertEquals("1", reservation.getRoom().getId());
-        assertEquals("2", reservation.getUser().getId());
-        assertEquals(LocalDateTime.parse("2023-02-21T12:20:00"), reservation.getStartTime());
-        assertEquals(LocalDateTime.parse("2023-02-22T13:20:00"), reservation.getEndTime());
+        assertEquals("1", reservation.getUser().getId());
+        assertEquals(LocalDateTime.parse("2023-07-21T12:20:00"), reservation.getStartTime());
+        assertEquals(LocalDateTime.parse("2023-07-22T13:20:00"), reservation.getEndTime());
     }
 
     @Test
@@ -90,7 +91,41 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         "to must not be null"))));
     }
 
+    @Test
+    void tryToAddReservationWithPastDate() throws Exception {
+        LocalDateTime pastDateTime = LocalDateTime.now().minusDays(1);
 
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setFrom(pastDateTime);
+        reservationRequestDTO.setTo(LocalDateTime.now().plusDays(1));
+
+        this.mockMvc.perform(post("/admin/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", Matchers.containsInAnyOrder("from should not be a date in the past",
+                        "user must not be null",
+                        "room must not be null")));
+    }
+
+    @Test
+    void tryToAddReservationWithInvalidDateOrder() throws Exception {
+        LocalDateTime fromDateTime = LocalDateTime.now().plusDays(2);
+        LocalDateTime toDateTime = LocalDateTime.now().plusDays(1);
+
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setFrom(fromDateTime);
+        reservationRequestDTO.setTo(toDateTime);
+
+        this.mockMvc.perform(post("/admin/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$",Matchers.containsInAnyOrder("this should not be before from",
+                        "user must not be null",
+                        "room must not be null")));
+
+    }
     @Test
     @Transactional
     void deleteValidReservation() throws Exception{
@@ -105,8 +140,11 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Transactional
     void updateValidReservation() throws Exception {
         LocalDateTime from,to;
-        from = LocalDateTime.parse("2023-05-21T12:20:00");
-        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        from = LocalDateTime.now().plusDays(1);
+        to = LocalDateTime.now().plusDays(2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        String fromDate = from.format(formatter);
+        String toDate = to.format(formatter);
         String roomID = "1";
         String userID = "2";
         ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
@@ -125,16 +163,19 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         Reservation reservation1 = reservation.get();
         assertEquals(111, reservation1.getRoom().getRoomNumber());
         assertEquals(userID, reservation1.getUser().getId());
-        assertEquals(from, reservation1.getStartTime());
-        assertEquals(to, reservation1.getEndTime());
+        assertEquals(LocalDateTime.parse(fromDate), reservation1.getStartTime());
+        assertEquals(LocalDateTime.parse(toDate), reservation1.getEndTime());
     }
 
     @Test
     @Transactional
     void addReservationThroughUpdate() throws Exception {
         LocalDateTime from,to;
-        from = LocalDateTime.parse("2023-05-21T12:20:00");
-        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        from = LocalDateTime.now().plusDays(1);
+        to = LocalDateTime.now().plusDays(2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        String fromDate = from.format(formatter);
+        String toDate = to.format(formatter);
         String roomID = "1";
         String userID = "3";
         ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
@@ -153,9 +194,43 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         Reservation reservation1 = reservation.get();
         assertEquals(111, reservation1.getRoom().getRoomNumber());
         assertEquals(userID, reservation1.getUser().getId());
-        assertEquals(from, reservation1.getStartTime());
-        assertEquals(to, reservation1.getEndTime());
+        assertEquals(LocalDateTime.parse(fromDate), reservation1.getStartTime());
+        assertEquals(LocalDateTime.parse(toDate), reservation1.getEndTime());
     }
 
 
+    @Test
+    void updateInvalidReservationWithPastDate() throws Exception {
+        LocalDateTime pastDateTime = LocalDateTime.now().minusDays(1);
+
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setFrom(pastDateTime);
+        reservationRequestDTO.setTo(LocalDateTime.now().plusDays(1));
+
+        this.mockMvc.perform(put("/admin/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", Matchers.containsInAnyOrder("from should not be a date in the past",
+                        "user must not be null",
+                        "room must not be null")));
+    }
+
+    @Test
+    void updateInvalidReservationWithWrongTime() throws Exception {
+        LocalDateTime fromDateTime = LocalDateTime.now().plusDays(2);
+        LocalDateTime toDateTime = LocalDateTime.now().plusDays(1);
+
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setFrom(fromDateTime);
+        reservationRequestDTO.setTo(toDateTime);
+
+        this.mockMvc.perform(put("/admin/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$",Matchers.containsInAnyOrder("to should not be before from",
+                        "user must not be null",
+                        "room must not be null")));
+    }
 }
