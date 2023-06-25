@@ -52,14 +52,14 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
     @Test
     @Transactional
     void addValidReservation() throws Exception {
-        Map<String,Object> body = new HashMap<>();
-        body.put("room",1);
-        body.put("from","2023-02-21 12:20:00");
-        body.put("to","2023-02-22 13:20:00");
-        body.put("user",2);
+        ReservationRequestDTO reservationRequestDTO  = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom("1");
+        reservationRequestDTO.setFrom(LocalDateTime.parse("2023-02-21T12:20:00"));
+        reservationRequestDTO.setTo(LocalDateTime.parse("2023-02-22T13:20:00"));
+        reservationRequestDTO.setUser("1");
         MvcResult result = this.mockMvc.perform(post("/admin/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString((body))))
+                        .content(objectMapper.writeValueAsString((reservationRequestDTO))))
                         .andExpect(status().isCreated())
                 .andReturn();
         String reservationId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
@@ -68,7 +68,7 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         assertTrue(resReservation.isPresent());
         Reservation reservation = resReservation.get();
         assertEquals("1", reservation.getRoom().getId());
-        assertEquals("2", reservation.getUser().getId());
+        assertEquals("1", reservation.getUser().getId());
         assertEquals(LocalDateTime.parse("2023-02-21T12:20:00"), reservation.getStartTime());
         assertEquals(LocalDateTime.parse("2023-02-22T13:20:00"), reservation.getEndTime());
     }
@@ -88,6 +88,50 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         "room must not be null",
                         "from must not be null",
                         "to must not be null"))));
+    }
+
+    @Test
+    @Transactional
+    void tryToAddInvalidReservationWithoutUserAndRoomExisting() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "100";
+        String userID = "100";
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
+        this.mockMvc.perform(post("/admin/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User does not exist",
+                        "Room does not exist"
+                ))));
+    }
+
+    @Test
+    @Transactional
+    void tryToAddInvalidReservationWithUserBanned() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "100";
+        String userID = "4";
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
+        this.mockMvc.perform(post("/admin/reservations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User is banned",
+                        "Room does not exist"
+                ))));
     }
 
 
@@ -155,6 +199,51 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
         assertEquals(userID, reservation1.getUser().getId());
         assertEquals(from, reservation1.getStartTime());
         assertEquals(to, reservation1.getEndTime());
+    }
+
+
+    @Test
+    @Transactional
+    void updateValidReservationWithUserBannedAndRoomNonExisting() throws Exception {
+        LocalDateTime from,to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "100";
+        String userID = "2";
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
+        this.mockMvc.perform(put("/admin/reservations/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User is banned",
+                        "Room does not exist"
+                ))));
+
+    }
+
+    @Test
+    @Transactional
+    void updateValidReservationWithUserNonExisting() throws Exception {
+        LocalDateTime from, to;
+        from = LocalDateTime.parse("2023-05-21T12:20:00");
+        to = LocalDateTime.parse("2023-05-22T13:20:00");
+        String roomID = "1";
+        String userID = "100";
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setRoom(roomID);
+        reservationRequestDTO.setFrom(from);
+        reservationRequestDTO.setTo(to);
+        reservationRequestDTO.setUser(userID);
+        this.mockMvc.perform(put("/admin/reservations/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User does not exist"
+                        ))));
     }
 
 
