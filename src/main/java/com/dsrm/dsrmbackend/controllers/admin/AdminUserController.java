@@ -57,7 +57,7 @@ public class AdminUserController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/users/{id}/roles")
-    ResponseEntity<Void> partialUpdateUser(@PathVariable String id, @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
+    ResponseEntity<Void> partialUpdateUser(@PathVariable String id, @Valid @RequestBody UserRolesOnlyDTO userRolesOnlyDTO){
         Optional<User> user =  userService.updateUser(userRolesOnlyDTO, id);
         if(user.isPresent())
             return ResponseEntity.ok().build();
