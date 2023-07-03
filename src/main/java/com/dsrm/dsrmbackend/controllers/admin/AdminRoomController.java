@@ -37,7 +37,7 @@ public class AdminRoomController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/rooms/{id}")
-    public ResponseEntity<Void> updateRoom(@RequestBody RoomRequestDTO roomRequestDTO, @PathVariable String id) {
+    public ResponseEntity<Void> updateRoom(@Valid @RequestBody RoomRequestDTO roomRequestDTO, @PathVariable String id) {
         Room room = roomService.updateRoom(roomRequestDTO, id);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
