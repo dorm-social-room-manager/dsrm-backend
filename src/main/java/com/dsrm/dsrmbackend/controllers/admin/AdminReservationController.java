@@ -42,7 +42,7 @@ public class AdminReservationController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/reservations/{id}")
-    public ResponseEntity<Void> updateReservation(@RequestBody ReservationRequestDTO reservationRequestDTO, @PathVariable String id) {
+    public ResponseEntity<Void> updateReservation(@Valid @RequestBody ReservationRequestDTO reservationRequestDTO, @PathVariable String id) {
         Reservation reservation = reservationService.updateReservation(reservationRequestDTO, id);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
