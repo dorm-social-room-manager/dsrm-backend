@@ -20,23 +20,17 @@ public class RestResponseEntityExceptionHandler {
     public List<String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String errorMessage = error.getDefaultMessage();
-            if (errorMessage != null) {
-                errors.add(errorMessage);
-            } else if (error instanceof FieldError) {
+            if (error instanceof FieldError) {
                 FieldError fieldError = (FieldError) error;
                 String fieldName = fieldError.getField();
-                String defaultMessage = fieldError.getDefaultMessage();
-                if (defaultMessage != null) {
-                    errors.add(fieldName + " " + defaultMessage);
-                } else {
-                    errors.add(fieldName);
-                }
+                String errorMessage = fieldName + " " + fieldError.getDefaultMessage();
+                errors.add(errorMessage);
+            } else {
+                errors.add(error.getDefaultMessage());
             }
         });
         return errors;
     }
-
     @ExceptionHandler(CredentialException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<String> handleCredentialException(CredentialException ex) {
