@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = UserExistsValidator.class)
 @Documented
 public @interface UserExists {
-    String message() default "does not exist";
+    String message() default "User does not exist";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

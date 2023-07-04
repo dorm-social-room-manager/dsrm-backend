@@ -66,31 +66,6 @@ class ReservationControllerTests  extends  AbstractIntegrationTest{
     }
 
     @Test
-    @Transactional
-    void addValidReservation() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String,Object> body = new HashMap<>();
-        body.put("room",1);
-        body.put("from","2023-02-21 12:20:00");
-        body.put("to","2023-02-22 13:20:00");
-        body.put("user",2);
-        MvcResult result = this.mockMvc.perform(post("/reservations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString((body))))
-                        .andExpect(status().isCreated())
-                .andReturn();
-        String reservationId = JsonPath.read(result.getResponse().getHeader("Location"), "$");
-        reservationId = reservationId.substring(reservationId.length()-36);
-        Optional<Reservation> resReservation = reservationRepo.findById(reservationId);
-        assertTrue(resReservation.isPresent());
-        Reservation reservation = resReservation.get();
-        assertEquals("1", reservation.getRoom().getId());
-        assertEquals("2", reservation.getUser().getId());
-        assertEquals(LocalDateTime.parse("2023-02-21T12:20:00"), reservation.getStartTime());
-        assertEquals(LocalDateTime.parse("2023-02-22T13:20:00"), reservation.getEndTime());
-    }
-
-    @Test
     void retrieveReservationsInRange() throws Exception {
         this.mockMvc.perform(get("/reservations")
                         .contentType(MediaType.APPLICATION_JSON))

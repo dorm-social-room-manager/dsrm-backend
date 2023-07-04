@@ -27,7 +27,6 @@ public class UserNotBannedValidator implements ConstraintValidator<UserNotBanned
             return true;
         }
         Optional<User> user = userRepo.findById(userId);
-
-        return user.map(User::getBanEnd).map(date -> date.isAfter(LocalDateTime.now())).orElse(true);
+        return user.map(User::getBanEnd).map(date -> date.isBefore(LocalDateTime.now())).orElse(true);
     }
 }

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = ExistingRoomValidator.class)
 @Documented
 public @interface ExistingRoom {
-    String message() default "does not exist";
+    String message() default "Room does not exist";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
