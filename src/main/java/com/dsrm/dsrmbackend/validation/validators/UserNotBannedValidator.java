@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class UserNotBannedValidator implements ConstraintValidator<UserNotBanned, String> {
@@ -14,11 +15,10 @@ public class UserNotBannedValidator implements ConstraintValidator<UserNotBanned
     @Autowired
     private UserRepo userRepo;
 
-    private String defaultMessage;
 
     @Override
     public void initialize(UserNotBanned constraintAnnotation) {
-        defaultMessage = constraintAnnotation.message();
+
     }
 
     @Override
@@ -27,13 +27,7 @@ public class UserNotBannedValidator implements ConstraintValidator<UserNotBanned
             return true;
         }
         Optional<User> user = userRepo.findById(userId);
-        if (user.isPresent() && user.get().getBanEnd() != null) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(defaultMessage)
-                    .addConstraintViolation();
-            return false;
-        }
-        return true;
 
+        return user.map(User::getBanEnd).map(date -> date.isAfter(LocalDateTime.now())).orElse(true);
     }
 }

@@ -11,11 +11,8 @@ public class ExistingRoomValidator implements ConstraintValidator<ExistingRoom, 
     @Autowired
     private RoomRepo roomRepo;
 
-    private String defaultMessage;
-
     @Override
     public void initialize(ExistingRoom constraintAnnotation) {
-        defaultMessage = constraintAnnotation.message();
     }
 
     @Override
@@ -23,12 +20,6 @@ public class ExistingRoomValidator implements ConstraintValidator<ExistingRoom, 
         if (roomId == null){
             return true;
         }
-        if (roomRepo.findById(roomId).isEmpty()) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(defaultMessage)
-                    .addConstraintViolation();
-            return false;
-        }
-        return true;
+        return roomRepo.existsById(roomId);
     }
 }

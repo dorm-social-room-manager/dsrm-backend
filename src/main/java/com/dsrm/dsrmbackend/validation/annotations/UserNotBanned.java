@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = UserNotBannedValidator.class)
 @Documented
 public @interface UserNotBanned {
-    String message() default "User is banned";
+    String message() default "is banned";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

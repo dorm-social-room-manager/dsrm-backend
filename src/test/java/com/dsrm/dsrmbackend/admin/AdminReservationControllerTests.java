@@ -107,8 +107,8 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User does not exist",
-                        "Room does not exist"
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user does not exist",
+                        "room does not exist"
                 ))));
     }
 
@@ -129,8 +129,8 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User is banned",
-                        "Room does not exist"
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user is banned",
+                        "room does not exist"
                 ))));
     }
 
@@ -219,8 +219,8 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User is banned",
-                        "Room does not exist"
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user is banned",
+                        "room does not exist"
                 ))));
 
     }
@@ -242,7 +242,7 @@ class AdminReservationControllerTests extends  AbstractIntegrationTest{
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequestDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("User does not exist"
+                .andExpect((jsonPath("$", Matchers.containsInAnyOrder("user does not exist"
                         ))));
     }
 
