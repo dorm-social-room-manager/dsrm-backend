@@ -10,6 +10,9 @@ VALUES (2, 'test02@wp.pl', 'zaq1@WSX', 'Piotr', 'Nowak', 112, str_to_date('02-02
 INSERT INTO users(id, email, password, name, surname, room_number, ban_end)
 VALUES (3, 'test03@wp.pl', 'zaq1@WSX', 'Stefan', 'Grabowski', 111, null);
 
+INSERT INTO users (id, email, password, name, surname, room_number, ban_end)
+VALUES (4, 'test04@wp.pl', 'zaq1@WSX', 'Andrzej', 'Noga', 111, DATE_ADD(CURDATE(), INTERVAL 1 DAY));
+
 INSERT INTO rooms(id, room_number, floor, type_id, max_capacity, key_owner_id, opening_time, closing_time, unavailable_start, unavailable_end)
 VALUES (1, 111, 1, 1, 2, 1, (120000), (230000), null, null);
 

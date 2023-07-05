@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.security.auth.login.CredentialException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestControllerAdvice
@@ -20,13 +21,17 @@ public class RestResponseEntityExceptionHandler {
     public List<String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.add(fieldName + " " + errorMessage);
+            if (error instanceof FieldError) {
+                FieldError fieldError = (FieldError) error;
+                String fieldName = fieldError.getField();
+                String errorMessage = fieldName + " " + fieldError.getDefaultMessage();
+                errors.add(errorMessage);
+            } else {
+                errors.add(error.getDefaultMessage());
+            }
         });
         return errors;
     }
-
     @ExceptionHandler(CredentialException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<String> handleCredentialException(CredentialException ex) {

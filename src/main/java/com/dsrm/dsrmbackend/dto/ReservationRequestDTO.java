@@ -1,5 +1,8 @@
 package com.dsrm.dsrmbackend.dto;
 
+import com.dsrm.dsrmbackend.validation.annotations.ExistingRoom;
+import com.dsrm.dsrmbackend.validation.annotations.UserExists;
+import com.dsrm.dsrmbackend.validation.annotations.UserNotBanned;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -13,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ReservationRequestDTO {
     @NotNull
+    @ExistingRoom
     private String room;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Schema(type="string")
@@ -23,5 +27,7 @@ public class ReservationRequestDTO {
     @NotNull
     private LocalDateTime to;
     @NotNull
+    @UserExists
+    @UserNotBanned
     private String user;
 }
