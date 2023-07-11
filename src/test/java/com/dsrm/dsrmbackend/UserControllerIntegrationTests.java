@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -87,7 +89,8 @@ class UserControllerIntegrationTests extends  AbstractIntegrationTest{
         assertEquals("Jan", user.getName());
         assertEquals("Jan@gmail.com", user.getEmail());
         assertEquals("Chraboszcz", user.getSurname());
-        assertEquals("Marciniak", user.getPassword());
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        assertTrue(encoder.matches(userRequestDTO.getPassword(), user.getPassword()));
         assertEquals(111, user.getRoomNumber());
         assertNull(user.getRoles());
     }
