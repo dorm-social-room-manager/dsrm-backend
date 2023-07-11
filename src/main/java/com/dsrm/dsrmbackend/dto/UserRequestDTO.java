@@ -12,15 +12,15 @@ import java.util.List;
 @Getter
 @Setter
 public class UserRequestDTO {
-    @NotBlank(message = "{not.blank}")
+    @NotBlank(message = "{field.not.blank}")
     private String email;
-    @NotBlank(message = "{not.blank}")
+    @NotBlank(message = "{field.not.blank}")
     private String password;
-    @NotBlank(message = "{not.blank}")
+    @NotBlank(message = "{field.not.blank}")
     private String name;
-    @NotBlank(message = "{not.blank}")
+    @NotBlank(message = "{field.not.blank}")
     private String surname;
-    @NotNull(message = "{not.null}")
+    @NotNull(message = "{field.not.null}")
     private Integer roomNumber;
     private List<String> roles;
 }

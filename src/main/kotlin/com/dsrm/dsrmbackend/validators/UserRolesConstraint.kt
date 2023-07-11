@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class UserRolesConstraint(
-    val message: String = "{roles} does not exist",
+    val message: String = "{roles.not.exist}",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )
